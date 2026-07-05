@@ -1,22 +1,20 @@
 // Shared data types for the dashboard. The Python analyzer emits CSV (all
 // string values) + JSON; these types describe the parsed/coerced shape.
 
-export interface JudgeResponse {
-  timestamp: string;
-  score: number;
-  thoughts: string | null;
+export interface Member {
+  name: string;
+  email: string;
 }
 
-export interface JudgeInfo {
-  project: string;
-  raw_project_names: string[];
-  responses: JudgeResponse[];
-  average_score: number;
-}
-
-export interface JudgesFile {
-  by_repo: Record<string, JudgeInfo>;
-  unmapped_responses: unknown[];
+// One submission from the hackathon API, persisted to work/submissions.json by
+// scan.py and keyed here by the derived repo_id.
+export interface SubmissionInfo {
+  repo_id: string;
+  teamName: string;
+  githubUrl: string;
+  liveUrl: string;
+  submittedAt: string;
+  members: Member[];
 }
 
 export interface SummaryRow {
@@ -92,7 +90,7 @@ export type DataSourceKind = "env" | "work" | "snapshot" | "empty";
 
 export interface DashboardData {
   rows: SummaryRow[];
-  judges: JudgesFile;
+  submissions: Record<string, SubmissionInfo>; // keyed by repo_id
   details: Record<string, RepoDetail>;
   source: DataSourceKind;
   generatedAt: string;

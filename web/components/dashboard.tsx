@@ -1,14 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { DashboardData, SummaryRow } from "@/lib/types";
-import { buildJudgeMap, getJudgeInfoForRow } from "@/lib/judges";
+import type { DashboardData, SubmissionInfo } from "@/lib/types";
 import { HeaderStats } from "./header-stats";
 import { FiltersBar, type FilterKey } from "./filters-bar";
 import { SubmissionsTable } from "./submissions-table";
 import { DetailDrawer } from "./detail-drawer";
 
-export type SortMode = "default" | "judge" | "commits";
+export type SortMode = "default" | "commits" | "team";
 
 export function Dashboard({ data }: { data: DashboardData }) {
   const [filters, setFilters] = useState<Record<FilterKey, boolean>>({
@@ -20,7 +19,9 @@ export function Dashboard({ data }: { data: DashboardData }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
-  const judgeMap = useMemo(() => buildJudgeMap(data.judges), [data.judges]);
+  const submissionFor = (repoId: string): SubmissionInfo | null =>
+    data.submissions[repoId] ?? null;
+  const aiFor = (repoId: string) => data.details[repoId]?.aiText ?? null;
 
   const visibleRows = useMemo(() => {
     const rows = data.rows.filter((r) => {
@@ -29,21 +30,15 @@ export function Dashboard({ data }: { data: DashboardData }) {
       if (filters.merge && !r.has_merge_commits) return false;
       return true;
     });
-    if (sort === "judge") {
-      return [...rows].sort(
-        (a, b) =>
-          (getJudgeInfoForRow(b, judgeMap)?.average_score ?? -Infinity) -
-          (getJudgeInfoForRow(a, judgeMap)?.average_score ?? -Infinity),
-      );
-    }
     if (sort === "commits") {
       return [...rows].sort((a, b) => b.total_commits - a.total_commits);
     }
+    if (sort === "team") {
+      const name = (id: string) => data.submissions[id]?.teamName || id;
+      return [...rows].sort((a, b) => name(a.repo_id).localeCompare(name(b.repo_id)));
+    }
     return rows;
-  }, [data.rows, filters, sort, judgeMap]);
-
-  const judgeFor = (row: SummaryRow) => getJudgeInfoForRow(row, judgeMap);
-  const aiFor = (repoId: string) => data.details[repoId]?.aiText ?? null;
+  }, [data.rows, data.submissions, filters, sort]);
 
   const selectRow = (repoId: string) => {
     setSelectedId(repoId);
@@ -55,8 +50,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
   };
 
   const selectedDetail = selectedId ? data.details[selectedId] ?? null : null;
-  const selectedRow = selectedId ? data.rows.find((r) => r.repo_id === selectedId) : undefined;
-  const selectedJudge = getJudgeInfoForRow(selectedRow, judgeMap);
+  const selectedSubmission = selectedId ? data.submissions[selectedId] ?? null : null;
 
   return (
     <div className="relative z-10 min-h-screen">
@@ -86,7 +80,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
           </div>
           <SubmissionsTable
             rows={visibleRows}
-            judgeFor={judgeFor}
+            submissionFor={submissionFor}
             aiFor={aiFor}
             selectedId={selectedId}
             onSelect={selectRow}
@@ -96,7 +90,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
 
       <DetailDrawer
         detail={selectedDetail}
-        judge={selectedJudge}
+        submission={selectedSubmission}
         open={open}
         onOpenChange={handleOpenChange}
       />

@@ -1,59 +1,27 @@
 #!/usr/bin/env python3
 """
-Optional AI analysis runner using codex CLI.
+Optional AI analysis runner using a configurable CLI (see ai.command in config).
 """
 
 import argparse
-import csv
 import json
 import logging
 import subprocess
 import sys
 from pathlib import Path
-from typing import Tuple
 from textwrap import shorten
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from common_config import build_ai_command, load_config, override_from_cli  # noqa: E402
 
 
-def parse_repo_url(raw: str) -> Tuple[str, str]:
-    if raw.startswith("git@github.com:"):
-        path_part = raw.split(":", 1)[1]
-    elif "://" in raw:
-        after_scheme = raw.split("://", 1)[1]
-        path_part = after_scheme.split("/", 1)[1] if "/" in after_scheme else ""
-    else:
-        path_part = raw
-    path_part = path_part.strip("/")
-    if path_part.endswith(".git"):
-        path_part = path_part[:-4]
-    parts = path_part.split("/")
-    if len(parts) < 2:
-        raise ValueError(f"Cannot parse repo URL: {raw}")
-    owner, repo = parts[0], parts[1]
-    slug = f"{owner}/{repo}"
-    return slug, raw
-
-
-def load_repos_map(csv_path: Path) -> dict:
-    mapping = {}
-    with csv_path.open(newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if "repo_url" in reader.fieldnames:
-                raw = row.get("repo_url", "").strip()
-                if not raw:
-                    continue
-                try:
-                    slug, _ = parse_repo_url(raw)
-                except ValueError:
-                    continue
-                repo_id = row.get("id", "").strip() or slug.replace("/", "-")
-                mapping[repo_id] = slug
-            elif row.get("id") and row.get("repo"):
-                mapping[row["id"].strip()] = row["repo"].strip()
-    return mapping
+def load_submissions_map(work_dir: Path) -> dict:
+    """Map repo_id -> GitHub URL from work/submissions.json (written by scan.py)."""
+    path = work_dir / "submissions.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {rec["repo_id"]: rec.get("githubUrl", "") for rec in data if rec.get("repo_id")}
 
 
 def load_text(path: Path) -> str:
@@ -134,7 +102,6 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run optional AI analysis via a configurable CLI.")
     parser.add_argument("--config", help="Path to config.json")
     parser.add_argument("--work-dir", help="Work directory (default: paths.work_dir from config)")
-    parser.add_argument("--repos-csv", help="Path to repos.csv (default: paths.repos_csv from config)")
     parser.add_argument("--only-id", help="Run AI analysis only for this repo id")
     parser.add_argument("--model", help="Model name (overrides ai.model from config)")
     args = parser.parse_args()
@@ -144,7 +111,6 @@ def main() -> None:
         config,
         {
             "paths.work_dir": args.work_dir,
-            "paths.repos_csv": args.repos_csv,
             "ai.model": args.model,
         },
     )
@@ -159,7 +125,10 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logger = logging.getLogger("ai")
 
-    repos_map = load_repos_map(Path(paths_cfg["repos_csv"]))
+    repos_map = load_submissions_map(work_dir)
+    if not repos_map:
+        logger.error("No work/submissions.json found. Run scan.py first.")
+        return
     context_path = Path(paths_cfg["ai_context"])
     template_path = Path(paths_cfg["ai_prompt_template"])
 
@@ -183,7 +152,7 @@ def main() -> None:
             logger.warning("Metrics file missing for %s, skipping.", repo_id)
             continue
         if repo_id not in repos_map:
-            logger.warning("Repo id %s not found in repos.csv, skipping.", repo_id)
+            logger.warning("Repo id %s not in submissions.json, skipping.", repo_id)
             continue
         repo = repos_map[repo_id]
         metrics = json.loads(metrics_path.read_text(encoding="utf-8"))

@@ -8,9 +8,9 @@ import type {
   Commit,
   DashboardData,
   DataSourceKind,
-  JudgesFile,
   Metrics,
   RepoDetail,
+  SubmissionInfo,
   SummaryRow,
 } from "./types";
 
@@ -18,7 +18,7 @@ interface Source {
   summaryCsv: string;
   metricsDir: string;
   aiDir: string;
-  judgeJson: string;
+  submissionsJson: string;
   kind: Exclude<DataSourceKind, "empty">;
 }
 
@@ -38,7 +38,7 @@ function numOrNull(v: string | undefined): number | null {
 }
 
 // Resolve where to read artifacts from, in priority order:
-//   1. env override (HJ_DATA_ROOT repo-layout, or HJ_WORK_DIR + HJ_JUDGE_JSON)
+//   1. env override (HJ_DATA_ROOT repo-layout, or HJ_WORK_DIR)
 //   2. live work dir from ../config.json (local `npm run dev`)
 //   3. committed web/snapshot/ (deployed build, e.g. Vercel)
 function resolveDataSource(): Source | null {
@@ -48,7 +48,7 @@ function resolveDataSource(): Source | null {
       summaryCsv: path.join(root, "work", "summary", "metrics_summary.csv"),
       metricsDir: path.join(root, "work", "metrics"),
       aiDir: path.join(root, "work", "ai_outputs"),
-      judgeJson: path.join(root, "data", "judge-responses-normalized.json"),
+      submissionsJson: path.join(root, "work", "submissions.json"),
       kind: "env",
     };
   }
@@ -58,7 +58,7 @@ function resolveDataSource(): Source | null {
       summaryCsv: path.join(workDir, "summary", "metrics_summary.csv"),
       metricsDir: path.join(workDir, "metrics"),
       aiDir: path.join(workDir, "ai_outputs"),
-      judgeJson: process.env.HJ_JUDGE_JSON ?? "",
+      submissionsJson: path.join(workDir, "submissions.json"),
       kind: "env",
     };
   }
@@ -72,7 +72,7 @@ function resolveDataSource(): Source | null {
           summaryCsv,
           metricsDir: path.join(cfg.workDir, "metrics"),
           aiDir: path.join(cfg.workDir, "ai_outputs"),
-          judgeJson: cfg.judgeJson,
+          submissionsJson: path.join(cfg.workDir, "submissions.json"),
           kind: "work",
         };
       }
@@ -87,7 +87,7 @@ function resolveDataSource(): Source | null {
       summaryCsv: path.join(snap, "summary", "metrics_summary.csv"),
       metricsDir: path.join(snap, "metrics"),
       aiDir: path.join(snap, "ai_outputs"),
-      judgeJson: path.join(snap, "judge-responses-normalized.json"),
+      submissionsJson: path.join(snap, "submissions.json"),
       kind: "snapshot",
     };
   }
@@ -145,21 +145,34 @@ function parseCommit(r: Record<string, string>): Commit {
   };
 }
 
-const EMPTY_JUDGES: JudgesFile = { by_repo: {}, unmapped_responses: [] };
-
-function readJudges(judgeJson: string): JudgesFile {
+// Read work/submissions.json (an array written by scan.py) into a map keyed by
+// repo_id: team name, live URL, and members.
+function readSubmissions(submissionsJson: string): Record<string, SubmissionInfo> {
+  const map: Record<string, SubmissionInfo> = {};
   try {
-    if (judgeJson && fs.existsSync(judgeJson)) {
-      const data = JSON.parse(fs.readFileSync(judgeJson, "utf8"));
-      return {
-        by_repo: data?.by_repo ?? {},
-        unmapped_responses: data?.unmapped_responses ?? [],
-      };
+    if (submissionsJson && fs.existsSync(submissionsJson)) {
+      const data = JSON.parse(fs.readFileSync(submissionsJson, "utf8"));
+      for (const rec of Array.isArray(data) ? data : []) {
+        if (!rec?.repo_id) continue;
+        map[rec.repo_id] = {
+          repo_id: rec.repo_id,
+          teamName: rec.teamName ?? "",
+          githubUrl: rec.githubUrl ?? "",
+          liveUrl: rec.liveUrl ?? "",
+          submittedAt: rec.submittedAt ?? "",
+          members: Array.isArray(rec.members)
+            ? rec.members.map((m: { name?: string; email?: string }) => ({
+                name: m.name ?? "",
+                email: m.email ?? "",
+              }))
+            : [],
+        };
+      }
     }
   } catch {
-    // ignore malformed judge data
+    // ignore malformed submissions data
   }
-  return EMPTY_JUDGES;
+  return map;
 }
 
 function readDetail(src: Source, id: string): RepoDetail {
@@ -203,15 +216,15 @@ export function getDashboardData(): DashboardData {
   const src = resolveDataSource();
 
   if (!src || !fs.existsSync(src.summaryCsv)) {
-    return { rows: [], judges: EMPTY_JUDGES, details: {}, source: "empty", generatedAt };
+    return { rows: [], submissions: {}, details: {}, source: "empty", generatedAt };
   }
 
   const rows = parseCsv(fs.readFileSync(src.summaryCsv, "utf8")).map(parseSummaryRow);
-  const judges = readJudges(src.judgeJson);
+  const submissions = readSubmissions(src.submissionsJson);
   const details: Record<string, RepoDetail> = {};
   for (const row of rows) {
     if (row.repo_id) details[row.repo_id] = readDetail(src, row.repo_id);
   }
 
-  return { rows, judges, details, source: src.kind, generatedAt };
+  return { rows, submissions, details, source: src.kind, generatedAt };
 }

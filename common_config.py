@@ -1,9 +1,9 @@
 """Shared configuration for the hackathon-judges CLI tools.
 
 This module is the single source of truth for every tunable setting. All of the
-scripts (`scan.py`, `ai/run_ai.py`, `normalize_judge_responses.py`,
-`list_submissions.py`, `ui/server.py`) load their configuration through
-`load_config` and then apply command-line overrides with `override_from_cli`.
+scripts (`scan.py`, `ai/run_ai.py`, `list_submissions.py`) load their
+configuration through `load_config` and then apply command-line overrides with
+`override_from_cli`.
 
 Precedence, highest first:
     1. CLI flags      (applied via override_from_cli; only non-None values win)
@@ -33,12 +33,14 @@ from typing import Any, Dict, List, Optional, Tuple
 DEFAULT_CONFIG: Dict[str, Any] = {
     "window": {"t0": None, "t1": None},
     "log_level": "INFO",
+    # Repo list + team metadata come from the hackathon site's public API. The
+    # API key is a secret provided via the HACKATHON_API_KEY env var, never here.
+    "api": {
+        "base_url": "https://cursor-hackathon-site.vercel.app",
+        "public_endpoint": "/api/public",
+    },
     "paths": {
         "work_dir": "work",
-        "repos_csv": "data/repos.csv",
-        "project_repo_map": "data/project-repo-map.csv",
-        "judge_responses_raw": "data/judge-responses-raw.csv",
-        "judge_responses_normalized": "data/judge-responses-normalized.json",
         "ai_context": "ai/hackathon_context.md",
         "ai_prompt_template": "ai/prompt_template.txt",
     },
@@ -62,7 +64,6 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "tree_max_entries": 200,
         "tree_max_depth": 3,
     },
-    "server": {"host": "0.0.0.0", "port": 8000},
 }
 
 

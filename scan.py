@@ -23,6 +23,12 @@ from common_config import (  # noqa: E402
     override_from_cli,
     validate_buckets,
 )
+from hackathon_api import (  # noqa: E402
+    HackathonApiError,
+    build_submission_records,
+    fetch_public,
+    resolve_api_key,
+)
 
 
 def parse_iso_datetime(value: str) -> datetime:
@@ -408,40 +414,34 @@ def write_summary_csv(path: Path, rows: List[Dict], bucket_keys: List[str]) -> N
             writer.writerow(cleaned)
 
 
-def load_repos_csv(path: Path) -> List[Dict]:
-    with path.open(newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        rows = []
-        for row in reader:
-            if "repo_url" in reader.fieldnames:
-                repo_raw = row.get("repo_url", "").strip()
-                if not repo_raw:
-                    continue
-                try:
-                    slug, clone_url = parse_repo_url(repo_raw)
-                except ValueError:
-                    continue
-                repo_id = row.get("id", "").strip() or slug.replace("/", "-")
-                rows.append(
-                    {
-                        "repo_id": repo_id,
-                        "repo_spec": clone_url if clone_url else slug,
-                        "slug": slug,
-                        "t0": row.get("t0", "").strip(),
-                    }
-                )
-            else:
-                if not row.get("id") or not row.get("repo"):
-                    continue
-                rows.append(
-                    {
-                        "repo_id": row["id"].strip(),
-                        "repo_spec": row["repo"].strip(),
-                        "slug": row["repo"].strip(),
-                        "t0": row.get("t0", "").strip(),
-                    }
-                )
-        return rows
+def build_repo_rows(
+    records: List[Dict], logger: logging.Logger
+) -> Tuple[List[Dict], List[Dict]]:
+    """Turn API submission records into analyzer rows + an enriched manifest.
+
+    Returns ``(rows, manifest)``: ``rows`` drive cloning/metrics; ``manifest``
+    is persisted to ``work/submissions.json`` for the dashboards (team name,
+    live URL, members).
+    """
+    rows: List[Dict] = []
+    manifest: List[Dict] = []
+    seen: set = set()
+    for rec in records:
+        try:
+            slug, clone_url = parse_repo_url(rec["githubUrl"])
+        except ValueError as exc:
+            logger.warning("Skipping submission %r: %s", rec.get("teamName"), exc)
+            continue
+        repo_id = slug.replace("/", "-")
+        if repo_id in seen:
+            logger.warning(
+                "Duplicate repo %s (team %r); keeping first.", repo_id, rec.get("teamName")
+            )
+            continue
+        seen.add(repo_id)
+        rows.append({"repo_id": repo_id, "repo_spec": clone_url or slug, "slug": slug, "t0": ""})
+        manifest.append({"repo_id": repo_id, **rec})
+    return rows, manifest
 
 
 def build_summary_row(
@@ -486,8 +486,8 @@ def build_summary_row(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Hackathon GitHub Repo Analyzer")
-    parser.add_argument("--repos", help="Path to repos CSV (default: paths.repos_csv from config)")
     parser.add_argument("--config", help="Path to config.json")
+    parser.add_argument("--api-key", help="Hackathon API key (overrides the HACKATHON_API_KEY env var)")
     parser.add_argument("--t0", help="Global hackathon start time (ISO-8601). Overrides config if set.")
     parser.add_argument("--t1", help="Hackathon end time (ISO-8601). Overrides config if set.")
     parser.add_argument("--work-dir", help="Work directory base path (default: paths.work_dir from config)")
@@ -529,7 +529,6 @@ def main() -> None:
             "window.t1": args.t1,
             "log_level": args.log_level,
             "paths.work_dir": args.work_dir,
-            "paths.repos_csv": args.repos,
             "detection.bulk_insertion_threshold": args.bulk_insertion_threshold,
             "detection.bulk_files_threshold": args.bulk_files_threshold,
             "detection.time_buckets_hours": time_buckets,
@@ -569,14 +568,20 @@ def main() -> None:
             logger.error("Failed to parse global t1: %s", exc)
             return
 
-    repos_csv = Path(config["paths"]["repos_csv"])
-    if not repos_csv.exists():
-        logger.error("Repos CSV not found: %s", repos_csv)
+    try:
+        api_key = resolve_api_key(args.api_key)
+        public = fetch_public(config, api_key)
+    except HackathonApiError as exc:
+        logger.error("%s", exc)
         return
-    rows = load_repos_csv(repos_csv)
+    rows, manifest = build_repo_rows(build_submission_records(public), logger)
     if not rows:
-        logger.warning("No repos found in CSV.")
+        logger.warning("No submissions with a GitHub URL returned by the API.")
         return
+    submissions_path = work_dir / "submissions.json"
+    with submissions_path.open("w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
+    logger.info("Fetched %d submissions from the API.", len(rows))
 
     summary_rows = []
 

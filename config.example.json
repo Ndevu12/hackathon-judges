@@ -4,12 +4,12 @@
     "t1": "2025-12-02T10:00:00Z"
   },
   "log_level": "INFO",
+  "api": {
+    "base_url": "https://cursor-hackathon-site.vercel.app",
+    "public_endpoint": "/api/public"
+  },
   "paths": {
     "work_dir": "work",
-    "repos_csv": "data/repos.csv",
-    "project_repo_map": "data/project-repo-map.csv",
-    "judge_responses_raw": "data/judge-responses-raw.csv",
-    "judge_responses_normalized": "data/judge-responses-normalized.json",
     "ai_context": "ai/hackathon_context.md",
     "ai_prompt_template": "ai/prompt_template.txt"
   },
@@ -26,9 +26,5 @@
     "readme_char_limit": 4000,
     "tree_max_entries": 200,
     "tree_max_depth": 3
-  },
-  "server": {
-    "host": "0.0.0.0",
-    "port": 8000
   }
 }

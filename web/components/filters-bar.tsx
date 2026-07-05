@@ -37,13 +37,14 @@ export function FiltersBar({ filters, onFilter, sort, onSort }: Props) {
       <div className="flex items-center gap-2 rounded-lg border border-border bg-panel px-2.5 py-1.5 text-xs text-text-secondary">
         <span>Sort by</span>
         <select
+          aria-label="Sort submissions"
           value={sort}
           onChange={(e) => onSort(e.target.value as SortMode)}
           className="rounded-md border border-border bg-bg-subtle px-2 py-1 text-xs text-foreground outline-none focus-visible:border-primary"
         >
           <option value="default">Default</option>
-          <option value="judge">Judge avg</option>
           <option value="commits">Commits</option>
+          <option value="team">Team A–Z</option>
         </select>
       </div>
     </div>

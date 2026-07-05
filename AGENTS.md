@@ -1,20 +1,19 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Core CLI: `scan.py` (metrics), `list_submissions.py` (listing helper), `normalize_judge_responses.py` (data cleanup).
+- Core CLI: `scan.py` (metrics), `list_submissions.py` (listing helper).
+- Data source: `hackathon_api.py` fetches teams + submissions from the event's public API (repo list, team metadata) — there are no local input files.
 - Shared config: `common_config.py` holds the config schema, defaults, and helpers; `config.json` (from `config.example.json`) holds per-event settings.
 - AI helpers: `ai/run_ai.py` plus prompt assets in `ai/hackathon_context.md` and `ai/prompt_template.txt`.
-- Web viewer: `ui/server.py` with static assets under `ui/static/` for browsing generated metrics.
-- Data inputs: `data/` holds CSV exports and normalized judge data.
-- Outputs: `work/` is the sandbox for clones, metrics, AI summaries, logs, and summaries; safe to delete/regenerate.
+- Dashboard: the Next.js app under `web/` reads `work/` artifacts (see `web/README.md`).
+- Outputs: `work/` is the sandbox for clones, metrics, AI summaries, logs, summary, and `submissions.json`; safe to delete/regenerate.
 
 ## Build, Test, and Development Commands
-- All scripts take `--config config.json`; settings resolve as CLI flag > config.json > built-in default. Shared schema/helpers live in `common_config.py`.
-- `python3 scan.py --config config.json`: clone repos and compute metrics; `--force` recomputes, `--no-update` skips git refresh, `--time-buckets`/`--bulk-*` override detection knobs.
-- `python3 ai/run_ai.py --config config.json [--only-id <repo>]`: produce AI notes once metrics exist (provider is the configurable `ai.command`).
-- `python3 ui/server.py --config config.json`: serve the local dashboard (host/port from the `server` section).
-- `python3 normalize_judge_responses.py --config config.json`: regenerate normalized judge data (requires `pandas`).
-- `python3 list_submissions.py --config config.json`: list teams with clone URLs.
+- Set `HACKATHON_API_KEY` in the environment (the API key; never commit it). All scripts take `--config config.json`; settings resolve as CLI flag > config.json > built-in default.
+- `python3 scan.py --config config.json`: fetch submissions from the API, clone repos, compute metrics, write `work/submissions.json`; `--force` recomputes, `--no-update` skips git refresh, `--time-buckets`/`--bulk-*` override detection knobs.
+- `python3 ai/run_ai.py --config config.json [--only-id <repo>]`: produce AI notes once metrics exist (provider is the configurable `ai.command`; reads `work/submissions.json`).
+- `python3 list_submissions.py --config config.json`: list teams with repo + live URLs from the API.
+- `cd web && npm run dev`: run the dashboard; `npm run sync` freezes `work/` into `web/snapshot/` for deploy.
 - Use `python3 <script> --help` for full flag descriptions.
 
 ## Coding Style & Naming Conventions
@@ -24,9 +23,9 @@
 - Prefer explicit error handling with actionable messages; avoid silent failures.
 
 ## Testing Guidelines
-- No formal test suite; validate changes by running the primary flows above against a small sample CSV in `data/`.
+- No formal test suite; validate changes by running the primary flows above (with `HACKATHON_API_KEY` set).
 - When changing git/metrics logic, spot-check `work/metrics/<id>.json` and `_commits.csv` for expected fields and ordering.
-- For UI tweaks, start the server and manually verify tables, flags, and time distributions render correctly.
+- For UI tweaks, run `cd web && npm run dev` and manually verify the table, flags, team info, and time distributions render correctly.
 
 ## Commit & Pull Request Guidelines
 - Match existing history: short, imperative summaries (e.g., `Add winners`, `Show judge info`).
@@ -34,6 +33,8 @@
 - PRs should describe the change, the commands run, and any datasets or sample repos used; include screenshots for UI adjustments.
 
 ## Security & Configuration Tips
-- Keep secrets out of `config.json`; it holds public settings (times, thresholds, paths, the AI command). The AI command is user-configurable and executed via subprocess without a shell — only point it at trusted binaries. Use environment variables or local overrides for anything sensitive.
+- The hackathon API key is a secret: provide it via `HACKATHON_API_KEY` (or `--api-key`), never in `config.json` or git. `config.json` holds only public settings (times, thresholds, paths, AI command, API base URL).
+- The API returns member emails (PII); they surface in the dashboard, which is admin-facing — be mindful before sharing a deployed link.
+- The AI command is user-configurable and executed via subprocess without a shell — only point it at trusted binaries.
 - Avoid committing `work/` outputs unless explicitly requested; they are reproducible and can be large.
 - Verify cloned repos come from trusted sources; this tool executes git operations and parses repo contents locally.

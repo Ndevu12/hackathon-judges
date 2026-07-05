@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Hackathon Analyzer",
   description:
-    "Judge dashboard for hackathon submission commit-authenticity metrics.",
+    "Dashboard for hackathon submission commit-authenticity metrics.",
 };
 
 export default function RootLayout({

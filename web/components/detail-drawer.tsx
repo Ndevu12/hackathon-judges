@@ -7,14 +7,14 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Card } from "@/components/ui/card";
-import type { JudgeInfo, RepoDetail } from "@/lib/types";
+import type { RepoDetail, SubmissionInfo } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { extractVerdict, splitAtVerdict } from "@/lib/verdict";
 import { CommitsTable } from "./commits-table";
 
 interface Props {
   detail: RepoDetail | null;
-  judge: JudgeInfo | null;
+  submission: SubmissionInfo | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -61,38 +61,54 @@ function AiSection({ aiText }: { aiText: string | null }) {
   );
 }
 
-function JudgeSection({ info }: { info: JudgeInfo | null }) {
-  if (!info || !info.responses?.length) {
+function TeamSection({ submission }: { submission: SubmissionInfo | null }) {
+  if (!submission) {
     return (
       <div className="rounded-lg border border-border bg-bg-subtle p-3 text-sm text-muted-foreground">
-        No judge responses
+        No submission info
       </div>
     );
   }
-  const avg = Number(info.average_score || 0).toFixed(1);
   return (
     <div className="rounded-lg border border-border bg-bg-subtle p-3">
-      <div className="mb-2 flex items-center gap-2">
-        <span className="rounded-full border border-primary bg-ok/10 px-2.5 py-1.5 text-sm font-semibold text-foreground">{avg}</span>
-        <span className="text-sm text-muted-foreground">
-          {info.responses.length} response{info.responses.length !== 1 ? "s" : ""}
-        </span>
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <span className="text-sm font-semibold text-foreground">{submission.teamName || "—"}</span>
+        <a
+          href={submission.githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-border bg-panel px-2.5 py-0.5 text-xs text-text-secondary hover:border-primary hover:text-primary"
+        >
+          GitHub ↗
+        </a>
+        {submission.liveUrl && (
+          <a
+            href={submission.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full border border-primary/40 bg-ok/10 px-2.5 py-0.5 text-xs text-primary hover:underline"
+          >
+            Live ↗
+          </a>
+        )}
       </div>
-      <div className="flex flex-col gap-2">
-        {info.responses.map((r, i) => (
-          <div key={i} className="rounded-lg border border-border bg-panel p-2.5">
-            <span className="inline-flex rounded-full border border-border bg-panel-hover px-2.5 py-1 text-sm font-semibold text-foreground">
-              #{i + 1} • {r.score}
-            </span>
-            {r.thoughts && <div className="mt-1 text-sm leading-snug text-foreground">{r.thoughts}</div>}
-          </div>
-        ))}
-      </div>
+      {submission.members.length > 0 ? (
+        <ul className="flex flex-col gap-1.5">
+          {submission.members.map((m, i) => (
+            <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-3 rounded-md border border-border bg-panel px-2.5 py-1.5">
+              <span className="text-sm text-foreground">{m.name || "—"}</span>
+              {m.email && <span className="font-mono text-[0.72rem] text-muted-foreground">{m.email}</span>}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="text-sm text-muted-foreground">No members listed</div>
+      )}
     </div>
   );
 }
 
-export function DetailDrawer({ detail, judge, open, onOpenChange }: Props) {
+export function DetailDrawer({ detail, submission, open, onOpenChange }: Props) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -101,19 +117,19 @@ export function DetailDrawer({ detail, judge, open, onOpenChange }: Props) {
       >
         <SheetHeader className="border-b border-border bg-bg-subtle">
           <SheetTitle className="font-mono text-sm">
-            {detail?.repoId ?? "Repository Details"}
+            {submission?.teamName || detail?.repoId || "Repository Details"}
           </SheetTitle>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-5">
           {detail && (
             <div className="flex flex-col gap-6">
               <section>
-                <h3 className={sectionTitle}>AI Analysis</h3>
-                <AiSection aiText={detail.aiText} />
+                <h3 className={sectionTitle}>Team</h3>
+                <TeamSection submission={submission} />
               </section>
               <section>
-                <h3 className={sectionTitle}>Judge Responses</h3>
-                <JudgeSection info={judge} />
+                <h3 className={sectionTitle}>AI Analysis</h3>
+                <AiSection aiText={detail.aiText} />
               </section>
               <div className="grid grid-cols-3 gap-3">
                 <MetricCard title="Summary" data={detail.metrics?.summary} />

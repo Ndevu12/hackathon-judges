@@ -1,6 +1,6 @@
 "use client";
 
-import type { JudgeInfo, SummaryRow } from "@/lib/types";
+import type { SubmissionInfo, SummaryRow } from "@/lib/types";
 import {
   Table,
   TableBody,
@@ -12,13 +12,12 @@ import {
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/lib/format";
 import { FlagBadge } from "./flag-badge";
-import { JudgeCell } from "./judge-cell";
 import { VerdictBadge } from "./verdict-badge";
 import { AIPreview } from "./ai-preview";
 
 interface Props {
   rows: SummaryRow[];
-  judgeFor: (row: SummaryRow) => JudgeInfo | null;
+  submissionFor: (repoId: string) => SubmissionInfo | null;
   aiFor: (repoId: string) => string | null;
   selectedId: string | null;
   onSelect: (repoId: string) => void;
@@ -27,14 +26,19 @@ interface Props {
 const th =
   "sticky top-0 z-10 bg-bg-subtle text-[0.65rem] font-semibold tracking-wide text-muted-foreground uppercase";
 
-export function SubmissionsTable({ rows, judgeFor, aiFor, selectedId, onSelect }: Props) {
+// Stop row-click (drawer) from firing when a link inside the row is clicked.
+function stop(e: React.MouseEvent) {
+  e.stopPropagation();
+}
+
+export function SubmissionsTable({ rows, submissionFor, aiFor, selectedId, onSelect }: Props) {
   return (
     <div className="max-h-[calc(100vh-160px)] overflow-auto">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
+            <TableHead className={cn(th, "min-w-[160px]")}>Team</TableHead>
             <TableHead className={cn(th, "min-w-[200px]")}>Repository</TableHead>
-            <TableHead className={cn(th, "text-center")} title="Average of judge scores; click a row for notes">Judge Avg</TableHead>
             <TableHead className={cn(th, "text-right")} title="Total number of commits in the repository">Commits</TableHead>
             <TableHead className={cn(th, "text-right")} title="Lines of code added across all commits">LOC+</TableHead>
             <TableHead className={cn(th, "text-right")} title="Lines of code deleted across all commits">LOC−</TableHead>
@@ -59,6 +63,7 @@ export function SubmissionsTable({ rows, judgeFor, aiFor, selectedId, onSelect }
           ) : (
             rows.map((row) => {
               const ai = aiFor(row.repo_id);
+              const sub = submissionFor(row.repo_id);
               const selected = row.repo_id === selectedId;
               return (
                 <TableRow
@@ -72,11 +77,43 @@ export function SubmissionsTable({ rows, judgeFor, aiFor, selectedId, onSelect }
                 >
                   <TableCell>
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[0.85rem] font-semibold text-foreground">{row.repo_id}</span>
-                      <span className="max-w-[280px] truncate text-[0.7rem] text-muted-foreground">{row.repo}</span>
+                      <span className="text-[0.85rem] font-semibold text-foreground">
+                        {sub?.teamName || "—"}
+                      </span>
+                      {sub && sub.members.length > 0 && (
+                        <span className="text-[0.7rem] text-muted-foreground">
+                          {sub.members.length} member{sub.members.length !== 1 ? "s" : ""}
+                        </span>
+                      )}
                     </div>
                   </TableCell>
-                  <TableCell className="text-center"><JudgeCell info={judgeFor(row)} /></TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-mono text-[0.8rem] text-foreground">{row.repo_id}</span>
+                      <div className="flex items-center gap-2 text-[0.7rem]">
+                        <a
+                          href={sub?.githubUrl || row.repo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={stop}
+                          className="max-w-[220px] truncate text-muted-foreground hover:text-primary hover:underline"
+                        >
+                          {(sub?.githubUrl || row.repo).replace(/^https?:\/\//, "")}
+                        </a>
+                        {sub?.liveUrl && (
+                          <a
+                            href={sub.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={stop}
+                            className="shrink-0 text-primary hover:underline"
+                          >
+                            Live ↗
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </TableCell>
                   <TableCell className="text-right font-mono text-[0.8rem]">{row.total_commits}</TableCell>
                   <TableCell className="text-right font-mono text-[0.8rem] text-ok">+{formatNumber(row.total_loc_added)}</TableCell>
                   <TableCell className="text-right font-mono text-[0.8rem] text-danger">−{formatNumber(row.total_loc_deleted)}</TableCell>

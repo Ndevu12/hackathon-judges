@@ -2,40 +2,24 @@
 // Copies the live analyzer artifacts into web/snapshot/ so a commit + push
 // deploys a frozen snapshot (Vercel reads web/snapshot/ since the local work/
 // dir is absent there). Source resolution mirrors lib/data.ts:
-//   HJ_DATA_ROOT  ->  HJ_WORK_DIR (+HJ_JUDGE_JSON)  ->  ../config.json
+//   HJ_DATA_ROOT  ->  HJ_WORK_DIR  ->  ../config.json work dir
 import fs from "node:fs";
 import path from "node:path";
 
 const cwd = process.cwd(); // web/
 const repoRoot = path.join(cwd, "..");
 
-function resolveSource() {
-  const root = process.env.HJ_DATA_ROOT;
-  if (root) {
-    return {
-      workDir: path.join(root, "work"),
-      judgeJson: path.join(root, "data", "judge-responses-normalized.json"),
-    };
-  }
-  if (process.env.HJ_WORK_DIR) {
-    return {
-      workDir: process.env.HJ_WORK_DIR,
-      judgeJson: process.env.HJ_JUDGE_JSON ?? "",
-    };
-  }
+function resolveWorkDir() {
+  if (process.env.HJ_DATA_ROOT) return path.join(process.env.HJ_DATA_ROOT, "work");
+  if (process.env.HJ_WORK_DIR) return process.env.HJ_WORK_DIR;
   let workRel = "work";
-  let judgeRel = "data/judge-responses-normalized.json";
   try {
     const cfg = JSON.parse(fs.readFileSync(path.join(repoRoot, "config.json"), "utf8"));
     workRel = cfg?.paths?.work_dir ?? workRel;
-    judgeRel = cfg?.paths?.judge_responses_normalized ?? judgeRel;
   } catch {
-    // no ../config.json — fall back to defaults
+    // no ../config.json — fall back to default
   }
-  return {
-    workDir: path.resolve(repoRoot, workRel),
-    judgeJson: path.resolve(repoRoot, judgeRel),
-  };
+  return path.resolve(repoRoot, workRel);
 }
 
 function dirSize(dir) {
@@ -47,7 +31,7 @@ function dirSize(dir) {
   }, 0);
 }
 
-const { workDir, judgeJson } = resolveSource();
+const workDir = resolveWorkDir();
 const summaryCsv = path.join(workDir, "summary", "metrics_summary.csv");
 
 if (!fs.existsSync(summaryCsv)) {
@@ -72,14 +56,12 @@ if (fs.existsSync(aiDir)) {
   fs.cpSync(aiDir, path.join(snapshot, "ai_outputs"), { recursive: true });
 }
 
-const snapshotJudge = path.join(snapshot, "judge-responses-normalized.json");
-if (judgeJson && fs.existsSync(judgeJson)) {
-  fs.copyFileSync(judgeJson, snapshotJudge);
+const submissions = path.join(workDir, "submissions.json");
+const snapshotSubs = path.join(snapshot, "submissions.json");
+if (fs.existsSync(submissions)) {
+  fs.copyFileSync(submissions, snapshotSubs);
 } else {
-  fs.writeFileSync(
-    snapshotJudge,
-    JSON.stringify({ by_repo: {}, unmapped_responses: [] }, null, 2),
-  );
+  fs.writeFileSync(snapshotSubs, "[]\n");
 }
 
 const rowCount = fs.readFileSync(summaryCsv, "utf8").trim().split("\n").length - 1;

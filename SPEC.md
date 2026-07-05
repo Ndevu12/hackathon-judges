@@ -102,9 +102,10 @@ Precedence is **CLI flag → `config.json` → built-in default**; every setting
 a default, so a partial or absent config still works. Legacy flat configs
 (`{"t0","t1","log_level"}`) are promoted into the `window` section automatically.
 
-Sections: `window` (t0/t1), `log_level`, `paths` (all input/output locations),
-`detection` (`bulk_insertion_threshold`, `bulk_files_threshold`,
-`time_buckets_hours`), `ai` (see §13), and `server` (host/port).
+Sections: `window` (t0/t1), `log_level`, `api` (`base_url`, `public_endpoint`;
+the key comes from `HACKATHON_API_KEY`, never config), `paths` (`work_dir`,
+`ai_context`, `ai_prompt_template`), `detection` (`bulk_insertion_threshold`,
+`bulk_files_threshold`, `time_buckets_hours`), and `ai` (see §13).
 
 **Time buckets are derived, not fixed.** `detection.time_buckets_hours` is a list
 of ascending hour boundaries `[b1, b2, …]`. The time-distribution keys become
@@ -114,37 +115,22 @@ non-ascending lists are rejected.
 
 ---
 
-## 5. Input: `data/repos.csv`
+## 5. Input: the hackathon public API
 
-CSV with header row. Required columns:
+Submissions and teams come from the event site's public API (`api.base_url` +
+`/api/public`); there are no local input files. The key is supplied via the
+`HACKATHON_API_KEY` env var (or `--api-key`) and sent as the `X-Api-Key` header.
 
-* `id`
-  Unique identifier for the repo (used for local directories and filenames).
+`scan.py` fetches `/api/public`, then for each submission:
 
-* `repo`
-  Either:
+* derives `repo_id = owner-repo` from `githubUrl` (via `parse_repo_url`);
+* joins the submission to its team (`teamId` → `team.id`/`team.mergedFrom`, with a
+  `teamName` fallback) to collect member names/emails;
+* writes an enriched manifest to `work/submissions.json`
+  (`[{repo_id, teamName, githubUrl, liveUrl, submittedAt, members}]`) that the
+  dashboard reads for team + live-URL columns.
 
-  * GitHub slug: `owner/name`
-  * OR a full git URL: `https://github.com/owner/name.git` (or SSH, if the user prefers).
-
-Optional columns:
-
-* `t0`
-  ISO-8601 string for per-repo T0 override. If present, overrides the global `--t0` passed on CLI.
-
-Example `data/repos.csv`:
-
-```csv
-id,repo,t0
-team-alpha,openai/example-repo,
-team-beta,https://github.com/org/hackathon-submission.git,2025-12-01T10:00:00Z
-team-gamma,anotherorg/cool-project,
-```
-
-Assumptions:
-
-* `id` values are unique.
-* If `repo` does not contain `://`, treat it as slug and convert to `https://github.com/<repo>.git`.
+The global `t0`/`t1` still come from `config.json` (or `--t0/--t1`).
 
 ---
 
