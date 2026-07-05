@@ -1,0 +1,22 @@
+{
+  "repo_id": "Emadsiddig-hacthon_project",
+  "repo": "https://github.com/Emadsiddig/hacthon_project",
+  "provider": "claude_code",
+  "model": "claude-opus-4-8",
+  "generated_at": "2026-07-05T16:01:36.441212+00:00",
+  "verdict": "suspicious",
+  "confidence": "medium",
+  "summary": "Pixel Hills is a React + Vite + TypeScript interactive virtual learning lab spanning Chemistry (periodic table, reaction lab), Biology anatomy, Physics simulations, a Rwanda geography explorer, study plans, and a mock-auth dashboard. All commit activity falls cleanly inside the event window with no pre-T0 work, but effectively the entire ~1,990 LOC codebase landed in a single 1,987-line commit, leaving no incremental development trail to corroborate live in-window building.",
+  "observations": [
+    "Both commits (2 total) occurred during the event window in the 3-6h band, with zero commits before T0 - timing itself is clean.",
+    "One commit contains 1,987 of 1,990 total LOC across 8 files: essentially the whole project dropped at once.",
+    "No merge commits and no deletions, consistent with a solo, single-sitting build.",
+    "README describes a broad, ambitious feature set (118-element table, anatomy explorer, projectile sim, Rwanda map, dashboard) that is plausible with AI tools but large in scope for ~2k LOC.",
+    "File tree shows only config/root files (src/ truncated); package.json/tsconfig confirm a standard Vite React-TS stack.",
+    "A live Netlify demo is provided, supporting that a working artifact exists."
+  ],
+  "red_flags": [
+    "Nearly the entire codebase (1,987 LOC) arrived in one bulk initial commit, providing no visible incremental development history.",
+    "Only 2 commits total makes it hard to distinguish genuine live building from a one-shot paste of pre-existing or externally generated code."
+  ]
+}

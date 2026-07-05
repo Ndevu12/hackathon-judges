@@ -1,0 +1,15 @@
+Izere is a client-side Vite/React/TypeScript app that turns a Rwandan MoMo statement CSV into integrity-checked books and an explainable credit score with loan sizing — a coherent, well-scoped hackathon product. All 14 commits fall inside the event window with no pre-T0 or post-T1 activity, and the volume/shape is consistent with AI-assisted building. The main caveat is a large initial commit and tight commit spacing, but these are typical of scaffolded, AI-accelerated work.
+
+- All 14 commits occurred during the event window (0 before T0, 0 after T1), a clean timing signal.
+- Commits are tightly spaced (~6.7 min median), consistent with rapid AI-assisted iteration rather than a single dump.
+- Largest single commit adds 6,519 LOC — plausibly inflated by package-lock.json and initial Vite/React scaffolding.
+- Project is genuinely structured: engine/integrity/parse libs, i18n (en/rw), multiple views, and 13 Vitest unit tests.
+- Feature scope (integrity forensics, 5-factor scoring, loan sizing, stress test, bilingual UI) is ambitious but achievable with AI tools in a day.
+- README, IZERE_EXPLAINED.md, and sample CSVs show a thought-out, demoable product rather than filler.
+
+Red flags:
+- Large initial commit after T0 (6,519 LOC) plus bulk-commit flag — verify it reflects scaffolding/lockfiles rather than a pre-built import.
+- All commits compressed into a single 3–6h band; report generated mid-event so later activity isn't captured, limiting full-window visibility.
+- Repo contains skills.zip and briefing/judging docs committed alongside code — worth a glance to confirm no external pre-built assets were dropped in.
+
+Overall authenticity assessment: looks consistent with a hackathon project

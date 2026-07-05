@@ -1,0 +1,17 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+DrSense-mentor-cockpit,0,73535dbe790010156890fb1de4df64081735a014,2026-07-05T09:06:57+00:00,,186.95,12436,0,51,0,0,1,0,1,"Initial commit: Mentor Cockpit MVP with Firebase, AI predictions, and mentor dashboard."
+DrSense-mentor-cockpit,1,a8acad8c2cde2030b10480da400865c398f6e0b6,2026-07-05T09:09:00+00:00,2.05,189.00,17,1,1,0,0,1,0,0,Document GitHub push steps and add-student workflow in README.
+DrSense-mentor-cockpit,2,3217811516235a18d6793412eaa5d4906ec7018e,2026-07-05T09:51:34+00:00,42.57,231.57,303,22,8,0,0,1,0,0,"Add backend setup guide, Firebase project config, and VS Code launch settings."
+DrSense-mentor-cockpit,3,0e312e9159e94375a3ab3075aae97d814cf33173,2026-07-05T10:27:51+00:00,36.28,267.85,2986,506,50,0,0,1,0,1,Gnenesis
+DrSense-mentor-cockpit,4,a78e750a0e7c2d57c6c0c76a3ba1f1c209103c0f,2026-07-05T10:53:48+00:00,25.95,293.80,785,146,30,0,0,1,0,0,geneours
+DrSense-mentor-cockpit,5,403b689df518babdf487e6ef1c666b8521e0eb12,2026-07-05T11:02:51+00:00,9.05,302.85,284,21,12,0,0,1,0,0,security measures
+DrSense-mentor-cockpit,6,ff90f7dfa61029aad267e0dbca17c06dc291fdae,2026-07-05T11:07:19+00:00,4.47,307.32,65,32,5,0,0,1,0,0,create student
+DrSense-mentor-cockpit,7,5e7e854c633f84d5fe194c57b6e5e16edd3661b6,2026-07-05T11:14:58+00:00,7.65,314.97,137,73,8,0,0,1,0,0,student
+DrSense-mentor-cockpit,8,51311b68f2b2b6bdae38c0bb579933fc030440ea,2026-07-05T11:19:10+00:00,4.20,319.17,155,23,6,0,0,1,0,0,DEBUG
+DrSense-mentor-cockpit,9,56ce796b9a19d6e6d536d3ce61041c6dbed14527,2026-07-05T11:25:15+00:00,6.08,325.25,216,96,6,0,0,1,0,0,Route add-student through /api/students with diagnostics
+DrSense-mentor-cockpit,10,b7867296a42e33af7825eee6f0361789a42d1081,2026-07-05T11:36:12+00:00,10.95,336.20,75,0,1,0,0,1,0,0,new credentials
+DrSense-mentor-cockpit,11,02aedd39332d616db90520b9a9518b8b06677b1a,2026-07-05T11:42:54+00:00,6.70,342.90,79,39,2,0,0,1,0,0,Fix firebase-admin on Vercel serverless
+DrSense-mentor-cockpit,12,fe76f49f54e029ca7c97a867ce6dadcabe059f42,2026-07-05T11:47:06+00:00,4.20,347.10,123,74,7,0,0,1,0,0,Fix firebase-admin on Vercel serverless
+DrSense-mentor-cockpit,13,1d47ffd28889e64913eed30a6dea39a80af37076,2026-07-05T11:51:24+00:00,4.30,351.40,48,15,5,0,0,1,0,0,"Fix Vercel: verify tokens via REST, drop firebase-admin/auth"
+DrSense-mentor-cockpit,14,44c7c044653e97b592e211b66585149398e767d2,2026-07-05T12:01:19+00:00,9.92,361.32,923,185,13,0,0,1,0,0,"Add roster edit, delete, and multi-select"
+DrSense-mentor-cockpit,15,81294d9082776b6adf290c2a918ee77f4a299730,2026-07-05T14:10:46+00:00,129.45,490.77,44,8,3,0,0,1,0,0,fixed
