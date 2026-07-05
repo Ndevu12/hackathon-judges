@@ -1,0 +1,15 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+nshizirunguwilson-izere,0,bf4f144974a4a88cd3df7d9afe2fbce194f32300,2026-07-05T09:04:46+00:00,,184.77,6519,0,16,0,0,1,0,1,scaffold vite react app with csv upload and sample loading
+nshizirunguwilson-izere,1,f6e64daa95055c46603fb82ec6d79d7c97bd0d26,2026-07-05T09:05:47+00:00,1.02,185.78,249,7,4,0,0,1,0,0,add csv parsing and integrity check with failure banner
+nshizirunguwilson-izere,2,d4c17f50e63a6cf89057374dda165caf8f7e2a6b,2026-07-05T09:08:55+00:00,3.13,188.92,479,1,4,0,0,1,0,0,"add scoring engine with monthly aggregation, loan assessment and tests"
+nshizirunguwilson-izere,3,1da0b361e3a0a49fb7995fabe39ceafb3f46b2d7,2026-07-05T09:12:38+00:00,3.72,192.63,328,5,4,0,0,1,0,0,"build decision card ui with monthly summary, top customers and loan request form"
+nshizirunguwilson-izere,4,7ad5d3f46325f7a453b6e0391b45f404d5a6d0f2,2026-07-05T09:33:42+00:00,21.07,213.70,851,384,12,0,0,1,0,0,add kinyarwanda and english translations with language toggle
+nshizirunguwilson-izere,5,d406c6c9d0f879ea59a700808cbb285a692d41c0,2026-07-05T09:47:47+00:00,14.08,227.78,752,403,9,0,0,1,0,0,redesign as sidebar dashboard with loan request and export views
+nshizirunguwilson-izere,6,9784df4cbed2aef259be6e147a4c48ab4c1b98ed,2026-07-05T09:55:48+00:00,8.02,235.80,26,7,3,0,0,1,0,0,show inline validation messages on loan amount and term inputs
+nshizirunguwilson-izere,7,8059cbbce36bdc0c1792b22f7eb2b62507cae12a,2026-07-05T10:02:28+00:00,6.67,242.47,711,56,9,0,0,1,0,0,render help tooltips in a portal with viewport clamping
+nshizirunguwilson-izere,8,074770ac066fabc2dd17b4de45e18773d90a114f,2026-07-05T10:32:06+00:00,29.63,272.10,43,15,5,0,0,1,0,0,"fix print export colors and page breaks, add years hint to loan term"
+nshizirunguwilson-izere,9,8efa5b360ba6466788940e2f4698e4eab724143b,2026-07-05T10:37:38+00:00,5.53,277.63,50,2,3,0,0,1,0,0,add repayment breakdown to loan request
+nshizirunguwilson-izere,10,48df962e562241c29e936ab94cddf6092599be60,2026-07-05T10:39:53+00:00,2.25,279.88,54,0,1,0,0,1,0,0,add readme
+nshizirunguwilson-izere,11,704e3829875af79eeb005532fe1c4b9fdc296391,2026-07-05T10:53:40+00:00,13.78,293.67,3824,5,6,0,0,1,0,1,add 15-month established sample and compact chart amounts in export
+nshizirunguwilson-izere,12,d5ec14f870e6bc8422b7a111ebd1b2abf023c2cc,2026-07-05T11:04:26+00:00,10.77,304.43,407,33,5,0,0,1,0,0,use chart.js for interactive cash flow chart and add explainer doc
+nshizirunguwilson-izere,13,b25931bd7615a20caf8df915b42e8f09cdb5e5a4,2026-07-05T11:07:16+00:00,2.83,307.27,14,4,1,0,0,1,0,0,"update readme with established sample, chart.js and docs link"
