@@ -1,0 +1,16 @@
+TrackIt/FinTrack is an ambitious full-stack digital ledger and business-health/credit-readiness platform for Rwandan MSMEs (React/Vite frontend, NestJS/Prisma/PostgreSQL backend, Docker, CI/CD, extensive docs). While all 7 commits fall inside the event window, a single ~37k-LOC / 269-file initial commit plus a fully "12 phases complete" enterprise-scale codebase strongly suggests a pre-built project was dumped in rather than authored during the ~14-hour window.
+
+- All 7 commits land within T0–T1 with none before T0, and timing (32-min median spacing) looks organic on the surface.
+- One commit adds 37,201 LOC across 269 files — 98% of the project's total 37,704 LOC — a classic bulk-dump signature of pre-existing code.
+- Scope is enormous: ~20 backend NestJS modules (auth, analytics, AI assistant, health-score, inventory, debts, admin, etc.) plus a full React feature app, Docker, and CI.
+- README documents 12 sequentially-completed 'phases' with SRS traceability and an implementation plan — artifacts of a long-running project, not a hackathon sprint.
+- Only 102 LOC deleted total indicates almost no iterative refactoring; the code arrived essentially finished.
+- Polished infra (backend/frontend CI workflows, Dockerfiles, i18n parity script, prettier/eslint configs) is unusual to stand up cleanly in the window.
+
+Red flags:
+- 37,201-LOC, 269-file initial commit after T0 — overwhelming bulk import of likely pre-existing code.
+- README claims all 12 development phases complete with SRS traceability, inconsistent with a single-day build.
+- Enterprise-scale multi-module scope far exceeds what a 14-hour window plausibly produces even with AI tooling.
+- Negligible deletions/refactor churn (102 LOC deleted) suggests code was authored elsewhere and pasted in.
+
+Overall authenticity assessment: highly suspicious

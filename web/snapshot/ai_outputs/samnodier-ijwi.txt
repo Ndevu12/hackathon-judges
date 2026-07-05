@@ -1,0 +1,10 @@
+IJWI is a citizen-reporting platform structured as a monorepo (ai-service, api, web) that classifies reports via a pluggable rules/Groq-vision AI service, scores urgency, and routes to authorities. All 25 commits fall cleanly within the event window with a steady ~10.7-min cadence, and the code scope is consistent with an AI-assisted hackathon build. Nothing points to pre-built or dumped work.
+
+- All 25 commits are inside the T0–T1 window; zero before T0 and zero after T1.
+- Healthy, incremental cadence (median ~10.7 min between commits) spread across the 0–3h, 3–6h, and 6–12h buckets — consistent with live building.
+- No large initial commit after T0; the largest single commit (5879 LOC, 48 files) is likely lockfiles/scaffolding rather than a suspicious code dump.
+- Coherent 3-app monorepo with clear separation (Express AI service, API worker, Vite web) and a detailed, specific README describing real contracts and fallbacks.
+- 16.7k LOC is plausible for a monorepo with three package-lock.json files and AI-assisted coding.
+- Merge commits present, indicating multi-branch/collaborative workflow rather than a single squashed dump.
+
+Overall authenticity assessment: looks consistent with a hackathon project

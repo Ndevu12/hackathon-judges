@@ -1,0 +1,22 @@
+{
+  "repo_id": "tom-cruiser-finished-cursor-challenge",
+  "repo": "https://github.com/tom-cruiser/finished-cursor-challenge",
+  "provider": "claude_code",
+  "model": "claude-opus-4-8",
+  "generated_at": "2026-07-05T16:01:05.001681+00:00",
+  "confidence": "medium",
+  "summary": "A vaccination-reminder web app (Node/Express/TypeScript backend + React/Vite frontend on Supabase) for the Cursor Kigali Hackathon 2026, with a coherent parent/hospital feature set and reasonable AI-assisted scope. The entire project landed as a single 20k-LOC, 139-file commit inside the event window with no pre-T0 history, so timing is clean but there is zero incremental development trail to verify genuine in-window building.",
+  "observations": [
+    "Single commit total (1) placed in the 3–6h bucket, within the T0–T1 window; no commits before T0 or after T1.",
+    "20,404 LOC added / 0 deleted across 139 files in one squashed commit — much of this is likely lockfiles/scaffold, but no progression is visible.",
+    "Product is well-scoped and coherent: two apps (backend + frontend), docs (API/ARCHITECTURE/ENVIRONMENT), Supabase migration, and check scripts.",
+    "Tech stack and feature list (Haversine hospital search, FCM push, cron reminders) are plausible for an AI-assisted hackathon build.",
+    "Presence of .cursor/rules and AGENTS.md is consistent with a Cursor-based workflow, matching the challenge theme.",
+    "No merge commits and no median inter-commit spacing (only one commit), so cadence cannot be assessed."
+  ],
+  "red_flags": [
+    "Whole codebase committed as a single bulk commit — no incremental history to confirm the work was actually built during the window rather than developed earlier and dumped.",
+    "Large initial commit after T0 flagged; the migration filename timestamp (20260705100000) aligns with the event date but cannot substitute for commit-level provenance."
+  ],
+  "verdict": "suspicious"
+}

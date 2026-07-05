@@ -56,10 +56,29 @@ if (fs.existsSync(aiDir)) {
   fs.cpSync(aiDir, path.join(snapshot, "ai_outputs"), { recursive: true });
 }
 
+// submissions.json carries team members incl. their emails (PII). The snapshot
+// is the committed/deployable artifact, so strip emails by default — the live
+// local dashboard (reading work/ directly) still shows them for admin use. Set
+// HJ_SNAPSHOT_KEEP_EMAILS=1 for a private deploy that intentionally needs them.
+const keepEmails = process.env.HJ_SNAPSHOT_KEEP_EMAILS === "1";
 const submissions = path.join(workDir, "submissions.json");
 const snapshotSubs = path.join(snapshot, "submissions.json");
+let redactedCount = 0;
 if (fs.existsSync(submissions)) {
-  fs.copyFileSync(submissions, snapshotSubs);
+  if (keepEmails) {
+    fs.copyFileSync(submissions, snapshotSubs);
+  } else {
+    const records = JSON.parse(fs.readFileSync(submissions, "utf8"));
+    for (const rec of records) {
+      for (const member of rec?.members ?? []) {
+        if (member && member.email) {
+          member.email = "";
+          redactedCount += 1;
+        }
+      }
+    }
+    fs.writeFileSync(snapshotSubs, JSON.stringify(records, null, 2) + "\n");
+  }
 } else {
   fs.writeFileSync(snapshotSubs, "[]\n");
 }
@@ -69,4 +88,9 @@ console.log("✓ Snapshot written to web/snapshot/");
 console.log(`  source: ${workDir}`);
 console.log(`  repos:  ${rowCount}`);
 console.log(`  size:   ${(dirSize(snapshot) / 1024).toFixed(1)} KB`);
+console.log(
+  keepEmails
+    ? "  emails: KEPT (HJ_SNAPSHOT_KEEP_EMAILS=1) — snapshot contains PII"
+    : `  emails: redacted ${redactedCount} member email(s) from submissions.json`,
+);
 console.log("\nCommit web/snapshot/ and push to deploy the frozen snapshot.");

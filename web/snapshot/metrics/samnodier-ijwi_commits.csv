@@ -1,0 +1,26 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+samnodier-ijwi,0,ce9457dad8d6c46e9ee3ebc96c4d9504cb6884ee,2026-07-05T07:41:11+00:00,,101.18,0,0,1,0,0,1,0,0,first commit
+samnodier-ijwi,1,294ae71b00770098090494f09649ebc5fb4c2e5b,2026-07-05T07:41:36+00:00,0.42,101.60,1,0,1,0,0,1,0,0,first commit
+samnodier-ijwi,2,cb1d77086a626b91b795665119e16e9bfe10a6ed,2026-07-05T08:06:33+00:00,24.95,126.55,3,0,1,0,0,1,0,0,add the link
+samnodier-ijwi,3,43319021d1fc7585518d42f78ee3f76e81c76519,2026-07-05T08:17:15+00:00,10.70,137.25,0,1,1,0,0,1,0,0,remove Desktop folder
+samnodier-ijwi,4,5b816b4de3dd0e5f9b6678a660c64e66af3e857e,2026-07-05T08:21:10+00:00,3.92,141.17,219,0,21,0,0,1,0,0,add boilerplate
+samnodier-ijwi,5,04b03ddaf19df0f89ed154b5ebd7365609e9ebce,2026-07-05T08:54:10+00:00,33.00,174.17,491,0,19,0,0,1,0,0,Add AI service scaffold with pluggable providers
+samnodier-ijwi,6,950e015c7b07d3d8c7d82115d5a4b21419060dc7,2026-07-05T09:04:52+00:00,10.70,184.87,2180,412,32,0,0,1,0,1,Rewrite AI service in Node.js/TypeScript
+samnodier-ijwi,7,119b76dcb4f7a181013e3ebf2b234d2bfa751d16,2026-07-05T09:25:10+00:00,20.30,205.17,16,0,3,0,0,1,0,0,Load .env automatically in AI service
+samnodier-ijwi,8,882afd09c5d2e51a576267621187699059ebde26,2026-07-05T09:26:59+00:00,1.82,206.98,5879,3,27,0,0,1,0,1,feat: creating the backend endpoints for the project
+samnodier-ijwi,9,0e3b2ac7a93cafecd2d842bc387081f0ff3b3680,2026-07-05T09:31:39+00:00,4.67,211.65,4757,23,48,0,0,1,0,1,Add citizen reporting frontend with camera capture and auth.
+samnodier-ijwi,10,db949a6a0a6897096010c69bb1c72ee8285efa84,2026-07-05T09:33:05+00:00,1.43,213.08,391,1,2,0,0,1,0,0,updating the packge locks
+samnodier-ijwi,11,83fd22f3a0469111001caa688e1be71b40dba5ec,2026-07-05T09:38:54+00:00,5.82,218.90,45,0,2,1,0,1,0,0,Merge branch 'ahmed' of github.com:samnodier/ijwi into ahmed
+samnodier-ijwi,12,c8fbb7d6f5ef0f1aa49d67ae2260569017e982ef,2026-07-05T09:45:36+00:00,6.70,225.60,25,0,1,0,0,1,0,0,Add Rwanda emergency numbers seed
+samnodier-ijwi,13,c11692543f900ea226de4e6fc5803fb4b25a7ed6,2026-07-05T09:50:06+00:00,4.50,230.10,137,41,7,0,0,1,0,0,Feat: combining the fronted with the backend
+samnodier-ijwi,14,4645d7e339021b281a934954666851eb05ceb585,2026-07-05T09:52:45+00:00,2.65,232.75,140,3,3,1,0,1,0,0,Merge remote-tracking branch 'origin/itbienvenu' into samnodier
+samnodier-ijwi,15,14beba4694a84be67ab08eec87679f8954e7e16e,2026-07-05T10:17:22+00:00,24.62,257.37,268,48,10,0,0,1,0,0,"Wire end-to-end report pipeline: photo EXIF, AI routing, phone alerts"
+samnodier-ijwi,16,d560ec65d80b51ba9408f2479bb832b5391dd4d7,2026-07-05T10:22:10+00:00,4.80,262.17,491,42,5,0,0,1,0,0,Add Africa's Talking SMS provider and fix users migration drift
+samnodier-ijwi,17,29f04db7ffd72df138dedb91b7fef518c567a151,2026-07-05T10:44:19+00:00,22.15,284.32,210,69,6,0,0,1,0,0,Align UI to Rwanda authorities and add Vercel + Render deploy config
+samnodier-ijwi,18,1461f9f480752b5251a0cd870ed78d4d98f88d44,2026-07-05T11:01:46+00:00,17.45,301.77,85,64,7,0,0,1,0,0,Make CORS origin configurable via CORS_ORIGIN; finalize report AI/dispatch flow
+samnodier-ijwi,19,7955774b99d77ba552427b29a8176032e1394ad1,2026-07-05T11:05:30+00:00,3.73,305.50,7,0,1,0,0,1,0,0,man
+samnodier-ijwi,20,759c12e3e23541482a12f6a27d5e57a175773211,2026-07-05T11:27:25+00:00,21.92,327.42,329,49,4,0,0,1,0,0,Adding some staffs
+samnodier-ijwi,21,05b79010e0a6106e5bc8d26cbfec375524279760,2026-07-05T11:48:37+00:00,21.20,348.62,192,2,7,0,0,1,0,0,FIx: fixing hte ai service
+samnodier-ijwi,22,b092334cf2afd9a53a7bf204ddde58f1958d29fc,2026-07-05T12:12:41+00:00,24.07,372.68,13,6,4,0,0,1,0,0,Modfying th backed logic so that we can be having the ai images analysed well
+samnodier-ijwi,23,3b890a57ea3eaecbdd831077758900bf8b673cca,2026-07-05T12:48:23+00:00,35.70,408.38,110,17,2,0,0,1,0,0,UPdaing the UI
+samnodier-ijwi,24,eecb043c031cb0fac92f216f0b08be39f65d3ed4,2026-07-05T14:16:42+00:00,88.32,496.70,699,130,9,0,0,1,0,0,gg

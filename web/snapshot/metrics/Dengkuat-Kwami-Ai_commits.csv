@@ -1,0 +1,15 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+Dengkuat-Kwami-Ai,0,4c045b40f882dcd1ddba47f8832c022c19772cc6,2026-07-05T07:54:34+00:00,,114.57,434124,0,644,0,0,1,0,1,"react, redux, react-router setup"
+Dengkuat-Kwami-Ai,1,3fe6fd4e1bde527a8a3c84badd6450382378eee5,2026-07-05T08:12:09+00:00,17.58,132.15,5079,2990,34,0,0,1,0,1,Routing setUp
+Dengkuat-Kwami-Ai,2,6d2e5c30f64cd907be42f5b82d6302ce51fb7e0e,2026-07-05T08:59:18+00:00,47.15,179.30,921,101,10,0,0,1,0,0,"Add landing page with bilingual support, side menu, and bottom nav"
+Dengkuat-Kwami-Ai,3,65197b9bd7e16d495ffda2b1cd73faefb5bf3347,2026-07-05T09:10:15+00:00,10.95,190.25,629,8,6,1,0,1,0,0,Merge pull request #1 from Dengkuat/landing
+Dengkuat-Kwami-Ai,4,c0d529eb3e30cf95b7c176a28a4100b147a97731,2026-07-05T09:09:53+00:00,-0.37,189.88,1037,291,16,0,0,1,0,1, Updates from the services page
+Dengkuat-Kwami-Ai,5,4081980b2c3f25f66ddcd45e9d157d3fadd01963,2026-07-05T09:54:16+00:00,44.38,234.27,20,3,1,1,0,1,0,0,Merge pull request #2 from Dengkuat/ajang
+Dengkuat-Kwami-Ai,6,122709ad40c18020ce5970d3057698c27df4a058,2026-07-05T10:16:24+00:00,22.13,256.40,70,24,4,0,0,1,0,0,fixed routing issues
+Dengkuat-Kwami-Ai,7,19d413c9154a90db35ae74ceee91b22ff2f916c5,2026-07-05T11:19:11+00:00,62.78,319.18,97,48,3,0,0,1,0,0,Added filtering of the categories
+Dengkuat-Kwami-Ai,8,d80b1db3e5532fd5d3b39c745df72117302a010f,2026-07-05T11:23:12+00:00,4.02,323.20,4407,165,11,1,0,1,0,1,Merge pull request #3 from Dengkuat/filter
+Dengkuat-Kwami-Ai,9,f567d8848884cb95ffbc49f05cdf373224ce8de6,2026-07-05T11:54:08+00:00,30.93,354.13,516,41,15,0,0,1,0,0,introduced gemini to support the chatbot
+Dengkuat-Kwami-Ai,10,89bb8b9b878eb286798b0220b130f235d6e90bc7,2026-07-05T12:18:54+00:00,24.77,378.90,762,457,8,0,0,1,0,0,Add localStorage checklists and embedded Google Maps in chat
+Dengkuat-Kwami-Ai,11,6ca33c9d6c41f4440a863ab738d21f9472dcce22,2026-07-05T12:47:36+00:00,28.70,407.60,1238,227,8,0,0,1,0,1,"Redesign chat UI, add onboarding, checklists, embedded maps; fix streaming, multi-turn context, and CTA auto-send"
+Dengkuat-Kwami-Ai,12,2e12bdb92fdbfd9b453180525527baa12bff8597,2026-07-05T13:00:32+00:00,12.93,420.53,0,327,3,0,0,1,0,0,Remove onboarding intro screen; app opens directly to home
+Dengkuat-Kwami-Ai,13,3c7c09167120d3f6d77f7d10803c8c33d4e47dd7,2026-07-05T13:10:59+00:00,10.45,430.98,1247,865,35,1,0,1,0,1,"Merge main, add dummy profile, remove chat hamburger menu, drop onboarding intro"

@@ -1,0 +1,21 @@
+{
+  "repo_id": "DrSense-mentor-cockpit",
+  "repo": "https://github.com/DrSense/mentor-cockpit",
+  "provider": "claude_code",
+  "model": "claude-opus-4-8",
+  "generated_at": "2026-07-05T16:02:52.789638+00:00",
+  "confidence": "medium",
+  "observations": [
+    "All 16 commits fall inside the event window (0 before T0, 0 after T1), with a steady ~7.65 min median cadence — consistent with an active build session, not a dump.",
+    "Commits cluster in the 3-6h band (14) with 2 in 6-12h; the report was generated mid-event (14:19), so this is a partial in-progress snapshot.",
+    "Product is a coherent, single-purpose app: a Firebase + Next.js mentor dashboard for logging student care sessions with AI risk analysis (server actions, Firestore rules, PWA, SEO).",
+    "The large initial commit (12,436 LOC / 51 files) is largely explained by a Next.js scaffold plus package-lock.json, which alone accounts for thousands of lines.",
+    "Code shape (App Router, hooks, lib/ai, firestore.rules, functions/) is reasonable scope for a hackathon accelerated by AI coding tools.",
+    "No merge commits and no end-of-window bulk paste; deletions (1,241) suggest genuine iterative refactoring."
+  ],
+  "red_flags": [
+    "Large initial commit after T0 (12,436 LOC, 51 files) — likely scaffold + lockfile, but judges may want to confirm it isn't a pre-built project imported wholesale at T0."
+  ],
+  "summary": "Mentor Cockpit is a focused Firebase-backed Next.js dashboard for logging student care sessions with AI-powered risk/prediction analysis. All 16 commits land within the event window with a natural ~8-minute cadence and no pre-T0 activity or end-of-window bulk dump, which reads as a genuine in-progress build. The only caveat is a large initial commit that is most plausibly a Next.js scaffold plus lockfile rather than an imported finished project.",
+  "verdict": "authentic"
+}

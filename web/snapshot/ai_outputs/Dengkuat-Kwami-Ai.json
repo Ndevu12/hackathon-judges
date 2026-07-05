@@ -1,0 +1,22 @@
+{
+  "repo_id": "Dengkuat-Kwami-Ai",
+  "repo": "https://github.com/Dengkuat/Kwami-Ai",
+  "provider": "claude_code",
+  "model": "claude-opus-4-8",
+  "generated_at": "2026-07-05T15:59:44.971999+00:00",
+  "verdict": "suspicious",
+  "confidence": "medium",
+  "summary": "Kwami-Ai appears to be a React/Vite/Redux TypeScript web app (chat, services, checklist, profile pages with an AI API layer) — a plausible hackathon scope. Commit timing is clean (all 14 commits inside the window, none before T0, ~22 min median cadence), but a single 434K-LOC / 644-file initial commit and a README that is verbatim the redux-thunk library's README raise authenticity questions worth a closer look.",
+  "observations": [
+    "All 14 commits fall within the event window (0 before T0, 0 after T1) with a healthy ~22 min median spacing and a natural spread across 0-12h.",
+    "One commit adds 434,124 of the 450,147 total LOC across 644 files — a massive bulk dump that dominates the repo and likely includes package-lock.json and/or committed dependencies.",
+    "The application source itself (api/, components/, pages/, store/ with slices) is a coherent, appropriately-sized React+Redux app consistent with AI-assisted hackathon work.",
+    "README content is the upstream redux-thunk package README, not a description of this project — suggests boilerplate reuse or an unedited template.",
+    "Merge commits present, indicating some real branch/collaboration workflow rather than a single scripted push.",
+    "No pre-T0 commits, so no evidence of the codebase being written before the event started."
+  ],
+  "red_flags": [
+    "Huge 434K-LOC single initial commit (644 files) could mask pre-built or vendored code and makes the true hand-written scope hard to verify.",
+    "README is a copied third-party library README (redux-thunk), not project-specific documentation, hinting at template/boilerplate origins."
+  ]
+}
