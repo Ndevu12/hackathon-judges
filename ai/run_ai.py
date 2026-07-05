@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 """
-Optional AI authenticity analysis via the Anthropic (Claude) API.
+Optional AI authenticity analysis for each hackathon repo.
 
-For each analyzed repo, asks Claude — using structured output — whether the
-project's commit pattern and code look consistent with being built during the
-hackathon window, and writes:
+Asks Claude — using structured output — whether the project's commit pattern and
+code look consistent with being built during the hackathon window, and writes:
   - work/ai_outputs/<id>.json : the structured verdict (consumed by the dashboard)
   - work/ai_outputs/<id>.txt  : a human-readable rendering
 
-Configuration lives in config.json's `ai` section (model, base_url, max_tokens,
-effort, thinking, truncation limits) — all overridable. The API key is read from
-ANTHROPIC_API_KEY (shell env or an untracked .env file), never from config.
-Requires: pip install anthropic
+The analysis backend is pluggable via config.json's `ai.provider`:
+  - "claude_code" (default): the local Claude Code CLI, on your Pro/Max
+    SUBSCRIPTION — no API key, no per-token API billing. Needs the `claude` CLI
+    installed and a logged-in account.
+  - "anthropic": the Claude API via the official `anthropic` SDK
+    (pip install anthropic + ANTHROPIC_API_KEY).
+
+Both return the same structured fields. Model, effort, thinking, and truncation
+limits live in the `ai` section and are all overridable; secrets never do.
 """
 
 import argparse
@@ -24,11 +28,7 @@ from textwrap import shorten
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from common_config import build_analysis_schema, load_config, override_from_cli  # noqa: E402
-
-try:
-    import anthropic
-except ImportError:
-    anthropic = None
+from providers import AuthError, make_provider  # noqa: E402
 
 
 SYSTEM_PROMPT = (
@@ -132,40 +132,6 @@ def build_prompt(
     )
 
 
-def make_client(ai_cfg: dict, api_key: str | None):
-    """Construct the Anthropic client; key resolves from --api-key then env/.env."""
-    kwargs = {}
-    if api_key:
-        kwargs["api_key"] = api_key
-    if ai_cfg.get("base_url"):
-        kwargs["base_url"] = ai_cfg["base_url"]
-    return anthropic.Anthropic(**kwargs)
-
-
-def analyze(client, ai_cfg: dict, prompt: str) -> dict:
-    """Call Claude with structured output and return the parsed analysis dict."""
-    output_config = {"format": {"type": "json_schema", "schema": build_analysis_schema()}}
-    if ai_cfg.get("effort"):
-        output_config["effort"] = ai_cfg["effort"]
-    kwargs = {
-        "model": ai_cfg["model"],
-        "max_tokens": ai_cfg["max_tokens"],
-        "system": SYSTEM_PROMPT,
-        "messages": [{"role": "user", "content": prompt}],
-        "output_config": output_config,
-    }
-    if ai_cfg.get("thinking"):
-        kwargs["thinking"] = {"type": "adaptive"}
-
-    response = client.messages.create(**kwargs)
-    if response.stop_reason == "refusal":
-        raise RuntimeError("model refused the request")
-    text = next((block.text for block in response.content if block.type == "text"), "")
-    if not text:
-        raise RuntimeError("model returned no text content")
-    return json.loads(text)
-
-
 def render_txt(analysis: dict) -> str:
     """Human-readable rendering. The verdict line matches what the UI parses."""
     lines = [analysis.get("summary", "").strip(), ""]
@@ -183,33 +149,35 @@ def render_txt(analysis: dict) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run AI authenticity analysis via the Claude API.")
+    parser = argparse.ArgumentParser(description="Run AI authenticity analysis (subscription or API).")
     parser.add_argument("--config", help="Path to config.json")
     parser.add_argument("--work-dir", help="Work directory (default: paths.work_dir from config)")
     parser.add_argument("--only-id", help="Run AI analysis only for this repo id")
+    parser.add_argument(
+        "--provider",
+        choices=["claude_code", "anthropic"],
+        help="Backend: 'claude_code' (subscription CLI) or 'anthropic' (API). Overrides ai.provider.",
+    )
     parser.add_argument("--model", help="Model (overrides ai.model from config)")
-    parser.add_argument("--base-url", help="API base URL (overrides ai.base_url)")
-    parser.add_argument("--api-key", help="API key (overrides the ANTHROPIC_API_KEY env var)")
+    parser.add_argument("--base-url", help="API base URL, anthropic provider only (overrides ai.base_url)")
+    parser.add_argument("--api-key", help="API key for the anthropic provider (overrides ANTHROPIC_API_KEY)")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logger = logging.getLogger("ai")
 
-    if anthropic is None:
-        logger.error("The anthropic SDK is not installed. Run: pip install anthropic")
-        return
-
     config = load_config(Path(args.config) if args.config else None)
     override_from_cli(
         config,
-        {"paths.work_dir": args.work_dir, "ai.model": args.model, "ai.base_url": args.base_url},
+        {
+            "paths.work_dir": args.work_dir,
+            "ai.provider": args.provider,
+            "ai.model": args.model,
+            "ai.base_url": args.base_url,
+        },
     )
     ai_cfg = config["ai"]
     paths_cfg = config["paths"]
-
-    if ai_cfg.get("provider", "anthropic") != "anthropic":
-        logger.error("Unsupported ai.provider %r (only 'anthropic' is built in).", ai_cfg["provider"])
-        return
 
     work_dir = Path(paths_cfg["work_dir"])
     metrics_dir = work_dir / "metrics"
@@ -228,7 +196,19 @@ def main() -> None:
 
     hackathon_context = load_text(context_path)
     prompt_template = load_text(template_path)
-    client = make_client(ai_cfg, args.api_key)
+
+    try:
+        provider = make_provider(
+            ai_cfg,
+            system_prompt=SYSTEM_PROMPT,
+            schema=build_analysis_schema(),
+            api_key=args.api_key,
+        )
+        provider.preflight()
+    except AuthError as exc:
+        logger.error("%s", exc)
+        return
+    logger.info("AI provider: %s", provider.label)
 
     if args.only_id:
         target_ids = [args.only_id]
@@ -268,14 +248,12 @@ def main() -> None:
             readme_snippet,
         )
 
-        logger.info("Analyzing %s with %s", repo_id, ai_cfg["model"])
+        logger.info("Analyzing %s with %s", repo_id, provider.label)
         try:
-            analysis = analyze(client, ai_cfg, prompt)
-        except anthropic.AuthenticationError:
-            logger.error(
-                "Authentication failed. Set ANTHROPIC_API_KEY in your environment "
-                "or a .env file (or pass --api-key)."
-            )
+            analysis = provider.analyze(prompt)
+        except AuthError as exc:
+            # A setup/auth problem dooms every repo — stop rather than spam errors.
+            logger.error("%s", exc)
             return
         except Exception as exc:
             logger.error("Analysis failed for %s: %s", repo_id, exc)
@@ -284,6 +262,7 @@ def main() -> None:
         record = {
             "repo_id": repo_id,
             "repo": repo,
+            "provider": ai_cfg.get("provider", "claude_code"),
             "model": ai_cfg["model"],
             "generated_at": datetime.now(timezone.utc).isoformat(),
             **analysis,

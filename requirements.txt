@@ -1,3 +1,9 @@
-# Only needed for the optional AI analysis (ai/run_ai.py).
 # The core CLI (scan.py, list_submissions.py) is standard-library only.
+#
+# AI analysis (ai/run_ai.py) has two backends, chosen by `ai.provider`:
+#   - "claude_code" (default): uses the Claude Code CLI on your Pro/Max
+#     SUBSCRIPTION. No pip install and no API key — just install the CLI
+#     (https://claude.com/product/claude-code) and sign in.
+#   - "anthropic": uses the Claude API and needs the package below plus an
+#     ANTHROPIC_API_KEY. Install it only if you use this provider.
 anthropic

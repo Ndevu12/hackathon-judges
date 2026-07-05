@@ -3,7 +3,7 @@
 
 Local tool to analyze GitHub repositories for a hackathon and surface:
 - Static, objective metrics and flags about commit history and activity.
-- Optional short-form AI analysis using `codex --yolo exec --sandbox danger-full-access`.
+- Optional structured AI authenticity analysis via Claude — either the Claude Code CLI on a Pro/Max subscription (default) or the Claude API.
 
 The tool is designed for:
 - macOS
@@ -27,9 +27,9 @@ The tool is designed for:
 3. Provide **easy cross-repo comparison**:
    - One summary CSV with key metrics and flags per repo.
 
-4. Provide an optional **short-form AI report** per repo:
-   - Uses `codex` CLI with a consistent prompt.
-   - Outputs a small text file per repo for human review.
+4. Provide an optional **structured AI report** per repo:
+   - Uses Claude via a pluggable provider (subscription CLI by default, or the API).
+   - Outputs `work/ai_outputs/<repo_id>.json` (+ a human-readable `.txt`) for the dashboard and human review.
 
 5. Support **caching and resuming**:
    - Repos are cloned into a local folder and reused.
@@ -55,12 +55,13 @@ Implement the tool assuming the following repository structure:
 hackathon-analyzer/
   SPEC.md                     # this spec
   scan.py                     # main static analyzer CLI
+  hackathon_api.py            # public-API client (teams + submissions)
   ai/
-    run_ai.py                 # optional: runs codex for AI analysis
+    run_ai.py                 # optional: AI analysis orchestrator
+    providers.py              # pluggable AI backends (claude_code | anthropic)
     hackathon_context.md      # editable hackathon description/context
     prompt_template.txt       # LLM prompt template with placeholders
-  data/
-    repos.csv                 # list of repos to analyze (input)
+  # No data/ inputs — repos + teams come from the hackathon API (hackathon_api.py).
   work/
     repos/                    # cloned GitHub repositories (cache)
     metrics/                  # per-repo metrics JSON + commit CSVs
@@ -84,14 +85,11 @@ Assume the following environment:
 
   * `python3` (≥ 3.10)
   * `git` (available in PATH)
-* Optional but recommended:
+* Optional (AI analysis) — pick one:
 
-  * `codex` CLI installed and in PATH for AI analysis:
-
-    * Command form: `codex --yolo exec --sandbox danger-full-access "<PROMPT>"`
-* Python dependencies (standard library only if possible: `argparse`, `csv`, `json`, `subprocess`, `datetime`, `statistics`, `os`, `pathlib`, `logging`).
-
-No external Python packages should be required (`normalize_judge_responses.py` additionally uses `pandas`).
+  * **Subscription (default, `ai.provider = claude_code`):** the **Claude Code CLI** (`claude`) installed and signed in to a Pro/Max account. Command form: `claude -p --output-format json --json-schema '<SCHEMA>' --model <MODEL> --system-prompt '<SYS>' --tools "" --no-session-persistence` with the prompt on stdin.
+  * **API (`ai.provider = anthropic`):** `pip install anthropic` and `ANTHROPIC_API_KEY`.
+* Python dependencies: the core CLI (`scan.py`, `hackathon_api.py`, `list_submissions.py`) is standard-library only (`argparse`, `json`, `subprocess`, `urllib`, `datetime`, `statistics`, `os`, `pathlib`, `logging`). Only the `anthropic` AI provider needs a third-party package.
 
 ---
 
@@ -554,18 +552,32 @@ This file is the main artifact used by judges to spot deviations across all repo
 
 ---
 
-## 13. AI Analysis (Optional): `ai/run_ai.py`
+## 13. AI Analysis (Optional): `ai/run_ai.py` + `ai/providers.py`
 
 ### 13.1 Purpose
 
-For each repo with metrics, ask **Claude** (via the official `anthropic` SDK) for a
-**structured** authenticity analysis and write `work/ai_outputs/<repo_id>.json`
+For each repo with metrics, ask **Claude** for a **structured** authenticity
+analysis and write `work/ai_outputs/<repo_id>.json`
 (`{verdict, confidence, summary, observations[], red_flags[]}`) plus a
 human-readable `<repo_id>.txt`. Structured outputs make the verdict reliable data
-the dashboard renders directly (no regex on prose). The `ai` config section is
-fully configurable — `model` (default `claude-opus-4-8`, any Claude model),
-`base_url`, `max_tokens`, `effort`, `thinking` — and the API key is read from
-`ANTHROPIC_API_KEY` (env or an untracked `.env`), never config.
+the dashboard renders directly (no regex on prose).
+
+The backend is **pluggable** via `ai.provider` (both return the identical schema):
+
+* **`claude_code`** (default) — drives the local **Claude Code CLI**
+  (`claude -p --output-format json --json-schema …`) on the user's Claude Pro/Max
+  **subscription**. No API key, no per-token API billing; needs the `claude` CLI
+  installed and a logged-in account. `ai/providers.py` scrubs `ANTHROPIC_API_KEY`
+  from the CLI's environment so it can't silently fall back to API billing.
+* **`anthropic`** — calls the Claude API via the official `anthropic` SDK
+  (structured output via `output_config.format`). Needs `pip install anthropic`
+  and `ANTHROPIC_API_KEY`.
+
+The `ai` section is fully configurable — `provider`, `model` (default
+`claude-opus-4-8`), `cli_path`, `cli_timeout`, `base_url`, `max_tokens`, `effort`,
+`thinking`, truncation limits. Secrets are never in config: the `anthropic` route
+reads `ANTHROPIC_API_KEY` (env or an untracked `.env`); the subscription route
+uses the Claude Code login.
 
 ### 13.2 Additional input files
 
@@ -576,38 +588,18 @@ fully configurable — `model` (default `claude-opus-4-8`, any Claude model),
 
 * `ai/prompt_template.txt`
 
-  * Text file with placeholders:
+  * Text file with placeholders, all substituted by `build_prompt`:
 
     * `{{HACKATHON_CONTEXT}}`
     * `{{REPO_ID}}`
     * `{{REPO}}`
     * `{{METRICS_JSON}}`
-  * Example content:
-
-    ```text
-    You are assisting in reviewing hackathon projects to determine whether they were developed during the hackathon window and to highlight any suspicious patterns.
-
-    HACKATHON CONTEXT:
-    {{HACKATHON_CONTEXT}}
-
-    REPOSITORY:
-    - ID: {{REPO_ID}}
-    - Repo: {{REPO}}
-
-    METRICS (JSON):
-    {{METRICS_JSON}}
-
-    TASK:
-    Based on these metrics and flags, provide a short analysis of this submission. Focus on:
-
-    - Whether the commit timing and volume seem consistent with a small hackathon project.
-    - Any red flags (commits before T0, large bulk commits, unusual commit timing).
-    - Any notable patterns worth calling out for judges.
-
-    OUTPUT FORMAT (text only, no JSON):
-    - 3–5 bullet points summarizing the key observations.
-    - One final line starting with "Overall authenticity assessment:" followed by a short phrase (e.g., "looks consistent with a hackathon project", "some suspicious patterns", "highly suspicious").
-    ```
+    * `{{FILE_TREE}}` — truncated repo file tree (`tree_max_entries`/`tree_max_depth`)
+    * `{{README_SNIPPET}}` — best README, truncated to `readme_char_limit`
+  * The template describes the desired analysis; the **shape** of the output is
+    enforced by the structured-output schema (`build_analysis_schema`:
+    `verdict`, `confidence`, `summary`, `observations[]`, `red_flags[]`), not by
+    the prose — so it does not ask for free-text or a verdict line.
 
 ### 13.3 CLI: `ai/run_ai.py`
 
@@ -615,63 +607,43 @@ Usage:
 
 ```bash
 python3 ai/run_ai.py \
-  --work-dir work \
-  --repos-csv data/repos.csv \
+  --config config.json \
+  [--provider claude_code|anthropic] \
+  [--model claude-opus-4-8] \
   [--only-id team-alpha]
 ```
 
 Arguments:
 
-* `--work-dir` (same as in `scan.py`, default `work`).
-* `--repos-csv` path to `data/repos.csv` (for mapping `id` → `repo`).
+* `--config` path to `config.json` (settings resolve CLI > config > default).
+* `--work-dir` overrides `paths.work_dir` (default `work`).
+* `--provider` / `--model` / `--base-url` / `--api-key` override the `ai` section.
 * `--only-id` (optional) if provided, run AI analysis only for that repo id; otherwise run for all repos that have metrics JSON.
+
+Repo → GitHub URL mapping comes from `work/submissions.json` (written by `scan.py` from the API), not a CSV.
 
 ### 13.4 Behavior
 
-For each repo:
+Build the provider once (`make_provider` dispatches on `ai.provider`), run `preflight()` (e.g. the subscription route checks the `claude` CLI is on PATH), then for each repo:
 
 1. Load `work/metrics/<repo_id>.json`.
 
-2. Read `repo` string from `repos.csv` row corresponding to `repo_id`.
+2. Read the repo's GitHub URL from `work/submissions.json` (keyed by `repo_id`).
 
-3. Load `ai/hackathon_context.md`.
+3. Load `ai/hackathon_context.md` and `ai/prompt_template.txt`.
 
-4. Load `ai/prompt_template.txt`.
+4. Build the file tree + README snippet from the clone under `work/repos/<repo_id>`.
 
-5. Replace placeholders:
+5. Substitute all placeholders (`{{HACKATHON_CONTEXT}}`, `{{REPO_ID}}`, `{{REPO}}`, `{{METRICS_JSON}}`, `{{FILE_TREE}}`, `{{README_SNIPPET}}`) to obtain the final `prompt`.
 
-   * `{{HACKATHON_CONTEXT}}` with contents of `hackathon_context.md`.
-   * `{{REPO_ID}}` with repo id.
-   * `{{REPO}}` with repo string from CSV.
-   * `{{METRICS_JSON}}` with pretty-printed JSON from metrics file.
+6. Call `provider.analyze(prompt)`, which returns the validated analysis dict:
 
-6. Obtain a final `prompt` string.
+   * `claude_code`: `subprocess.run(["claude", "-p", "--output-format", "json", "--model", …, "--system-prompt", …, "--json-schema", …, "--tools", "", "--no-session-persistence"], input=prompt, env=<ANTHROPIC_API_KEY scrubbed>)`, then read `structured_output` from the JSON envelope.
+   * `anthropic`: `client.messages.create(..., output_config={"format": {"type": "json_schema", "schema": …}})`, then parse the text block.
 
-7. Call `codex` CLI:
+7. Write the record (adds `provider`, `model`, `generated_at`) to `work/ai_outputs/<repo_id>.json` and a human-readable rendering to `<repo_id>.txt`.
 
-   ```python
-   import subprocess
-
-   result = subprocess.run(
-       [
-         "codex",
-         "--yolo",
-         "exec",
-         "--sandbox",
-         "danger-full-access",
-         prompt
-       ],
-       capture_output=True,
-       text=True,
-       check=False
-   )
-   ```
-
-8. Write stdout to `work/ai_outputs/<repo_id>.txt`.
-
-   * If `result.returncode != 0`, log error and write an error marker file instead.
-
-AI output is purely advisory; it does not feed back into metrics.
+Error handling: an `AuthError` (missing CLI/login, bad API key, unknown provider) aborts the whole run with guidance; any other per-repo error is logged and the loop continues. AI output is purely advisory; it does not feed back into metrics.
 
 ---
 
@@ -695,7 +667,7 @@ Error conditions to handle:
 For AI runner:
 
 * If metrics JSON is missing, skip that repo with a warning.
-* If `codex` command fails (non-zero exit), log and write a short error note.
+* An `AuthError` (missing CLI/login, invalid API key, unknown provider) aborts the run with actionable guidance; other per-repo failures are logged and skipped.
 
 ---
 

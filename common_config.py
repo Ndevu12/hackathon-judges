@@ -50,16 +50,21 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "bulk_files_threshold": 50,
         "time_buckets_hours": [3, 6, 12, 24],
     },
-    # Optional AI authenticity analysis via the Anthropic (Claude) API. The API
-    # key is a secret read from ANTHROPIC_API_KEY (env or a .env file), never here.
-    # Fully configurable: swap the model, point base_url elsewhere, toggle thinking.
+    # Optional AI authenticity analysis. The backend is pluggable via `provider`:
+    #   "claude_code" (default) — the local Claude Code CLI, on your Pro/Max
+    #       SUBSCRIPTION. No API key, no per-token API billing; needs the `claude`
+    #       CLI installed and a logged-in account.
+    #   "anthropic" — the Claude API via the `anthropic` SDK (pip install +
+    #       ANTHROPIC_API_KEY). Secrets always come from the env/.env, never here.
     "ai": {
-        "provider": "anthropic",
-        "model": "claude-opus-4-8",
-        "base_url": None,          # optional; else ANTHROPIC_BASE_URL / SDK default
-        "max_tokens": 8000,
-        "effort": "high",          # low|medium|high|xhigh|max; null to omit
-        "thinking": True,          # adaptive thinking; set false for models without it
+        "provider": "claude_code",   # "claude_code" (subscription) | "anthropic" (API)
+        "model": "claude-opus-4-8",  # both; CLI also accepts aliases like "opus"
+        "cli_path": "claude",        # claude_code: path to the Claude Code CLI
+        "cli_timeout": 300,          # claude_code: per-repo subprocess timeout (s)
+        "base_url": None,            # anthropic: else ANTHROPIC_BASE_URL / SDK default
+        "max_tokens": 8000,          # anthropic: response token cap
+        "effort": "high",            # both: low|medium|high|xhigh|max; null to omit
+        "thinking": True,            # anthropic: adaptive thinking (ignored by CLI)
         "readme_char_limit": 4000,
         "tree_max_entries": 200,
         "tree_max_depth": 3,
