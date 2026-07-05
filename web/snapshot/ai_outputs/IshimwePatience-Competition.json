@@ -1,0 +1,22 @@
+{
+  "repo_id": "IshimwePatience-Competition",
+  "repo": "https://github.com/IshimwePatience/Competition.git",
+  "provider": "claude_code",
+  "model": "claude-opus-4-8",
+  "generated_at": "2026-07-05T16:03:37.380461+00:00",
+  "verdict": "authentic",
+  "confidence": "medium",
+  "summary": "CareLink is a full-stack care/health platform with a Node.js backend, React/Vite frontend, and a native Android app (APK included). All 36 commits fall cleanly inside the event window with no pre-T0 activity, and the timing cadence looks like genuine live development; the enormous LOC count is an artifact of committed dependencies rather than evidence of pre-built work.",
+  "observations": [
+    "Clean timeline: 0 commits before T0 and 0 after T1, all 36 during the window — no evidence of pre-hackathon work.",
+    "Steady cadence (~5.8 min median between commits, 26 commits in the 3–6h band) is consistent with active live coding.",
+    "The 747,964-LOC / 3,939-file single commit and the micromatch README strongly indicate node_modules/vendored deps were committed, inflating LOC — not hand-written code.",
+    "Coherent multi-part scope (carelink-backend, carelink-frontend, carelink-android) is ambitious but plausible for an AI-assisted hackathon team.",
+    "Presence of .env.example, Postman collection, and build configs suggests a real, working project rather than a scaffold dump.",
+    "Merge commits present, indicating branch-based collaboration during the event."
+  ],
+  "red_flags": [
+    "node_modules/vendored dependencies appear committed (micromatch README, ~750k LOC bulk commit), which obscures the true amount of authored code and makes originality hard to verify from metrics alone.",
+    "Large initial commit after T0 bundles a huge file set at once, limiting visibility into incremental authorship of core app code."
+  ]
+}

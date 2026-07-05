@@ -1,0 +1,8 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+NganjiX-TrackIt,0,2d9c993359b34b7d61cbf25fba9fdd54301d405c,2026-07-05T11:03:05+00:00,,303.08,37201,0,269,0,0,1,0,1,first commit
+NganjiX-TrackIt,1,8b2c110d3cb6fc9fc7a4897b00d59316fd6c834f,2026-07-05T11:14:46+00:00,11.68,314.77,41,40,23,0,0,1,0,0,Rebrand SmartLedger to FinTrack across project
+NganjiX-TrackIt,2,aec49ba1c84282919743093d62caa57e887cf756,2026-07-05T12:08:19+00:00,53.55,368.32,270,55,10,0,0,1,0,0,Fix auth flows and polish Stitch-aligned shell.
+NganjiX-TrackIt,3,27798215b046c4b21e46b68c3b5c937bde1b786d,2026-07-05T12:49:12+00:00,40.88,409.20,102,0,1,0,0,1,0,0,Add Render blueprint for full-stack deployment
+NganjiX-TrackIt,4,222ef85cd6e62f27756b6dce5862880fff0b3aa6,2026-07-05T13:12:23+00:00,23.18,432.38,1,1,1,0,0,1,0,0,Fix Render backend build dependency install
+NganjiX-TrackIt,5,125ae45d33005bc53c8b81c31b91a3de630e8737,2026-07-05T14:12:12+00:00,59.82,492.20,24,5,1,0,0,1,0,0,Add presentation-mode login fallback
+NganjiX-TrackIt,6,6492fe29a10aecd831a5d75f97e027416ad224b0,2026-07-05T14:18:45+00:00,6.55,498.75,65,1,1,0,0,1,0,0,Add dashboard demo data fallback for presentation

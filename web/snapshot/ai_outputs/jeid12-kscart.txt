@@ -1,0 +1,13 @@
+KasiCart is a well-scoped MVP that lets Kigali WhatsApp vendors spin up a shareable storefront and hands off orders via wa.me links and MTN MoMo USSD strings (no payment processing), built as a Node/Express + PostgreSQL backend and a Next.js frontend. Commit activity sits entirely within the T0-T1 window with a steady ~18-minute cadence, consistent with a genuine hackathon build accelerated by AI tooling.
+
+- All 7 commits fall inside the event window (0 before T0, 0 after T1) with no merge commits.
+- Steady ~18.5-min median spacing and 6 commits clustered in the 3-6h band suggests continuous iterative work rather than a single dump.
+- A large ~4,788-LOC initial commit (41 files) is flagged, but is consistent with an AI-assisted project scaffold including boilerplate and lockfiles.
+- Total ~6,479 LOC across a two-service Express API + Next.js app is reasonable scope for a hackathon MVP.
+- Product is coherent and focused: JWT vendor auth, catalog CRUD, Cloudinary uploads, public storefront, WhatsApp/MoMo hand-off, and QR sharing, matching an included SRS doc.
+- Presence of .env.example, render.yaml, and a detailed README indicates real setup/deployment work, not a copy-paste dump.
+
+Red flags:
+- Large initial commit (~4,788 LOC / 41 files) front-loads most of the codebase; timing shows no pre-T0 commits, but judges may want to confirm the scaffold wasn't pre-written before T0.
+
+Overall authenticity assessment: looks consistent with a hackathon project

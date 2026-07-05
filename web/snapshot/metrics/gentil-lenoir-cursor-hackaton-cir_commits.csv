@@ -1,0 +1,16 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+gentil-lenoir-cursor-hackaton-cir,0,1a00f2906508674f85a34f64f27c1a9f6c51d98e,2026-07-05T08:18:52+00:00,,138.87,1648,0,1,0,0,1,0,1,first commit
+gentil-lenoir-cursor-hackaton-cir,1,ba1e69d9aabf544f083a90c8e1426e4933870587,2026-07-05T08:35:23+00:00,16.52,155.38,10628,0,58,0,0,1,0,1,Adding worktree
+gentil-lenoir-cursor-hackaton-cir,2,3981ac82d0bab83110e84e952725bcce3ea6afbe,2026-07-05T08:55:25+00:00,20.03,175.42,3787,75,47,0,0,1,0,1,"Adding Authentification systeme, and FrontEnd user(citizen)"
+gentil-lenoir-cursor-hackaton-cir,3,be7a0a7cca4b663b8cb306d2f0b1d219f2a0d35a,2026-07-05T09:09:23+00:00,13.97,189.38,813,19,21,0,0,1,0,0,Makig report
+gentil-lenoir-cursor-hackaton-cir,4,f9114762b800da6b4a88424379b7f9fce3c40384,2026-07-05T09:19:09+00:00,9.77,199.15,15918,6015,176,0,0,1,0,1,Adding Admin App and other modifications
+gentil-lenoir-cursor-hackaton-cir,5,d32b067cc0421936c86279c2d1331e8f0f133d20,2026-07-05T09:43:02+00:00,23.88,223.03,1249,1123,20,0,0,1,0,1,Adding ligth dark mode
+gentil-lenoir-cursor-hackaton-cir,6,a9652ea4afa3d6b87f53358cc99d2b2190823281,2026-07-05T10:13:44+00:00,30.70,253.73,324,102,11,0,0,1,0,0,Correcting errors of Admin App
+gentil-lenoir-cursor-hackaton-cir,7,9d91f5b2b152414b80da08bdfdb1d83539554b67,2026-07-05T10:19:56+00:00,6.20,259.93,731,17,15,0,0,1,0,0,Adding community
+gentil-lenoir-cursor-hackaton-cir,8,162046542d37d16e8cf31bab61ed5dc121e4a433,2026-07-05T10:24:38+00:00,4.70,264.63,344,227,17,0,0,1,0,0,Done with community
+gentil-lenoir-cursor-hackaton-cir,9,a709643df81b33e93b389a7b863fabce2461692c,2026-07-05T10:28:26+00:00,3.80,268.43,182,53,4,0,0,1,0,0,Admin App auth corrected
+gentil-lenoir-cursor-hackaton-cir,10,dfa1306b30f2d5a0d72431db9403cfa13b6ceb9f,2026-07-05T10:54:39+00:00,26.22,294.65,472,89,18,0,0,1,0,0,Implementing the worker login
+gentil-lenoir-cursor-hackaton-cir,11,0b9c47a419f586bdf34af43f408a7981b56b512a,2026-07-05T11:07:50+00:00,13.18,307.83,773,132,13,0,0,1,0,0,Admin App connected to backend
+gentil-lenoir-cursor-hackaton-cir,12,354056030aef43b6dea9628d33ba21520d2acb32,2026-07-05T11:21:33+00:00,13.72,321.55,660,7,8,0,0,1,0,0,Success
+gentil-lenoir-cursor-hackaton-cir,13,f7b42ed28ae92b4def37b372febbd00e6b413ba7,2026-07-05T12:03:01+00:00,41.47,363.02,58,2,5,0,0,1,0,0,Correcting cors
+gentil-lenoir-cursor-hackaton-cir,14,f1750b04fe2033acceca4880f79be57a66c2df52,2026-07-05T12:11:05+00:00,8.07,371.08,66,15,2,0,0,1,0,0,Done with cors

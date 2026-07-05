@@ -1,0 +1,13 @@
+Terura is a bilingual (EN/Kinyarwanda) MERN cooperative savings/loans platform for Rwandan informal savings groups, with Gemini AI tips and Firecrawl-based opportunity scraping. All 10 commits fall cleanly within the event window with no pre-T0 activity, and the volume/shape is consistent with an AI-assisted hackathon build; one large bulk commit is the only mild concern.
+
+- All 10 commits are inside the T0–T1 window (0 before, 0 after), concentrated in the 3–6h bucket — good timing hygiene.
+- Rapid ~4.6 min median spacing plus merge commits suggests active iterative work rather than a single dump.
+- One bulk commit adds 8,355 LOC across 55 files; the frontend `generated/` folder points to AI-scaffolded components explaining the spike.
+- Total ~12.9k LOC added is normal for AI-tooled MERN work and not itself a red flag.
+- Scope (auth, savings/loans, admin queue, Gemini + Firecrawl integrations) is ambitious but coherent and matches the file tree/README.
+- No large initial commit after T0 and no pre-T0 commits — initial scaffold isn't a suspicious dump.
+
+Red flags:
+- Single 8,355-LOC / 55-file commit is a bulk drop worth a quick spot-check, though likely AI-generated scaffolding given the `generated/` directory.
+
+Overall authenticity assessment: looks consistent with a hackathon project

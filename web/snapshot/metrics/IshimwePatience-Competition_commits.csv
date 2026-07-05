@@ -1,0 +1,37 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+IshimwePatience-Competition,0,655198ade9629ebbf606ed5b93e8e59791a14b7b,2026-07-05T08:44:32+00:00,,164.53,747964,0,3939,0,0,1,0,1,first commit
+IshimwePatience-Competition,1,400afe3a361098d3dd7a1f33ca009d28e55c281c,2026-07-05T09:13:04+00:00,28.53,193.07,35963,146,33,0,0,1,0,1,inital
+IshimwePatience-Competition,2,706ba8e7539f9c1365c5464e6479e7005ea79678,2026-07-05T09:17:33+00:00,4.48,197.55,631,0,16,0,0,1,0,0,Add CareLink Android app
+IshimwePatience-Competition,3,9f3902072cf88f562f5177cb6ce536f1a211857c,2026-07-05T09:20:45+00:00,3.20,200.75,122,88,6,1,0,1,0,0,Merge branch 'main' of https://github.com/IshimwePatience/Competition
+IshimwePatience-Competition,4,926eb36f4dc08d73e8bb58e491378193db081586,2026-07-05T09:22:08+00:00,1.38,202.13,0,0,1,1,0,1,0,0,Merge branch 'main' of https://github.com/IshimwePatience/Competition
+IshimwePatience-Competition,5,ab865534d1ff400f3a0f132e66873a62e39b3f25,2026-07-05T09:45:26+00:00,23.30,225.43,475,190,15,0,0,1,0,0,inital
+IshimwePatience-Competition,6,8bec759406b1ba93af21ac249305bd20815ea8fc,2026-07-05T09:48:09+00:00,2.72,228.15,388,101,5,0,0,1,0,0,Save current local changes
+IshimwePatience-Competition,7,86a4b4c5f8ca393f2f2ee0e262fdba94bf16184f,2026-07-05T09:58:08+00:00,9.98,238.13,519,195,16,0,0,1,0,0,inital
+IshimwePatience-Competition,8,f56924fe714262f90cc993f23218c3591e132a02,2026-07-05T10:01:08+00:00,3.00,241.13,89,37,3,0,0,1,0,0,inital
+IshimwePatience-Competition,9,cf3d54bf86903580724b5a9aa34b258f7ae17fd1,2026-07-05T10:06:24+00:00,5.27,246.40,467,122,9,0,0,1,0,0,inital
+IshimwePatience-Competition,10,f55c2331fd4d216a0a5075c54da4ed70257d99e4,2026-07-05T10:10:04+00:00,3.67,250.07,584,295,11,0,0,1,0,0,inital
+IshimwePatience-Competition,11,1d5512e94e5a798a143e83196aaee54744f7cecb,2026-07-05T10:16:34+00:00,6.50,256.57,94,132,9,0,0,1,0,0,inital
+IshimwePatience-Competition,12,90454834c1f0e39f9b67a804e126ca6d86b6ebd1,2026-07-05T10:30:10+00:00,13.60,270.17,182,308,17,0,0,1,0,0,inital
+IshimwePatience-Competition,13,f8c62c72c65ebf9bab41442ec95404ee435b4556,2026-07-05T10:50:21+00:00,20.18,290.35,949,45,30,0,0,1,0,0,inital
+IshimwePatience-Competition,14,0e3ecc1733ae3dcb938934757f8c8db5d4ff5361,2026-07-05T10:51:40+00:00,1.32,291.67,121,54,3,0,0,1,0,0,inital
+IshimwePatience-Competition,15,0565a2908f9505d715597312be8f89524290308e,2026-07-05T11:04:18+00:00,12.63,304.30,1,1,1,0,0,1,0,0,debug: log full error object
+IshimwePatience-Competition,16,2dc62e479c595669770090366916557d2c2153cf,2026-07-05T11:05:24+00:00,1.10,305.40,1,1,1,0,0,1,0,0,fix: google login redirect url + debug server errors
+IshimwePatience-Competition,17,0c07e2b1348c5f4c9cd925059db07fbd5a3f9f5a,2026-07-05T11:05:26+00:00,0.03,305.43,73,128,4,1,0,1,0,0,Merge branch 'main' of https://github.com/IshimwePatience/Competition
+IshimwePatience-Competition,18,2bb1ee9bacdbedb5eb993d35e929eed2d3d79c5f,2026-07-05T11:23:52+00:00,18.43,323.87,339,74,6,0,0,1,0,0,inital
+IshimwePatience-Competition,19,71fa1b23f795bf7dc0efe66e6a1bc5eef2134ed1,2026-07-05T11:36:59+00:00,13.12,336.98,437,66,8,0,0,1,0,0,inital
+IshimwePatience-Competition,20,96a7dc2bbe4f73a35631dbf513c11f34c65fd23d,2026-07-05T11:39:28+00:00,2.48,339.47,96,9,10,0,0,1,0,0,"hide google login temporarily, add apk download banner"
+IshimwePatience-Competition,21,79dd01f248dd6f3db2bb729bd977e7cbf87951c7,2026-07-05T11:39:29+00:00,0.02,339.48,211,79,3,0,0,1,0,0,inital
+IshimwePatience-Competition,22,23b667ebbda83baa2b9dbff8b8ef326d5dd9bc52,2026-07-05T11:40:03+00:00,0.57,340.05,0,14,1,1,0,1,0,0,"hide google login temporarily, add apk download banner"
+IshimwePatience-Competition,23,7720ac1e5c1ccbdf79a7c88228847767e9ede2f3,2026-07-05T11:56:23+00:00,16.33,356.38,41,0,2,0,0,1,0,0,feat: add WANDAA AI chat backend route
+IshimwePatience-Competition,24,8d263e48ff867f40da0058a29c63295eff3cea73,2026-07-05T12:23:55+00:00,27.53,383.92,1,1,1,0,0,1,0,0,restore google login now that oauth is configured
+IshimwePatience-Competition,25,4ca5eb24b819c6cb6d36d137b911629639df70ff,2026-07-05T12:26:00+00:00,2.08,386.00,109,0,2,0,0,1,0,0,add WANDAA AI chat widget to frontend
+IshimwePatience-Competition,26,40645b5573e2f254e72fefd456db7054edcdfc89,2026-07-05T11:44:05+00:00,-41.92,344.08,9,10,2,0,0,1,0,0,inital
+IshimwePatience-Competition,27,13286c38f278be91ee1c0129b9214b823d90bf6d,2026-07-05T11:49:52+00:00,5.78,349.87,371,174,17,0,0,1,0,0,inital
+IshimwePatience-Competition,28,9920fe5d3d622acf8b99f3969475d32cdcda7191,2026-07-05T11:59:33+00:00,9.68,359.55,253,19,2,0,0,1,0,0,Save current local changes
+IshimwePatience-Competition,29,957609b27a645e63533c3b858fafb09711bc00be,2026-07-05T12:06:59+00:00,7.43,366.98,29,55,3,0,0,1,0,0,inital
+IshimwePatience-Competition,30,3d7e5b737682161cfe64512a90742abb9f8a169e,2026-07-05T12:25:55+00:00,18.93,385.92,200,38,7,0,0,1,0,0,inital
+IshimwePatience-Competition,31,b5a89279ba66215e85204a606073b8f91560d327,2026-07-05T12:30:59+00:00,5.07,390.98,1,0,1,0,0,1,0,0,fix: add SPA rewrite rule for client-side routing
+IshimwePatience-Competition,32,d8dd30e3ee0206ea5e5a546d6dd7ab57bea005ef,2026-07-05T12:31:30+00:00,0.52,391.50,77,9,8,1,0,1,0,0,Merge branch 'main' of https://github.com/IshimwePatience/Competition
+IshimwePatience-Competition,33,a03aee35effac8ece35654e380a01995e698f981,2026-07-05T12:57:39+00:00,26.15,417.65,51,7,2,0,0,1,0,0,inital
+IshimwePatience-Competition,34,693659fe56ea8221adc1c79a79c71d890adc297d,2026-07-05T13:26:59+00:00,29.33,446.98,239,132,25,0,0,1,0,0,feat: add Google sign-up option to registration modal
+IshimwePatience-Competition,35,18f84d7f9505a6222bf54342726095d085bd1d62,2026-07-05T13:40:10+00:00,13.18,460.17,14,51,4,0,0,1,0,0,inital

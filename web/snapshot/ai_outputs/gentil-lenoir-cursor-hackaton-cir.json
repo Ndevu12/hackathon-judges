@@ -1,0 +1,23 @@
+{
+  "repo_id": "gentil-lenoir-cursor-hackaton-cir",
+  "repo": "https://github.com/gentil-lenoir/cursor-hackaton-cir.git",
+  "provider": "claude_code",
+  "model": "claude-opus-4-8",
+  "generated_at": "2026-07-05T16:02:26.828447+00:00",
+  "verdict": "suspicious",
+  "confidence": "medium",
+  "summary": "The project is a Laravel civic-issue reporting platform (citizen/worker/admin portals, complaints, comments, notifications) paired with an Electron desktop admin app. Commit timing is clean — all 15 commits fall inside the window with a healthy ~14-min cadence — but a 15,918-LOC / 176-file initial commit plus migration filenames auto-dated months before the event suggest a substantial pre-built codebase was imported at the start.",
+  "observations": [
+    "All 15 commits sit within T0-T1 with 0 before and 0 after; regular cadence (~14 min median).",
+    "Large initial commit: 15,918 LOC and 176 files at start - far beyond a fresh scaffold, indicating a mature app dropped in at once.",
+    "Migration filenames timestamped 2026_04_01 through 2026_04_06 predate the July 5 hackathon by ~3 months; Laravel auto-dates migrations at creation, hinting at prior development.",
+    "Only one migration (2026_07_05 add_likes_dislikes) is actually dated to the event day, layered on top of the older schema.",
+    "Product scope is broad and coherent (multi-role portals, Electron admin, seeders, tests) - plausible for AI-assisted work but large for a single day.",
+    "No pre-T0 commits and no merge commits, so the git history itself is not obviously back-dated."
+  ],
+  "red_flags": [
+    "Migration timestamps from April 2026 strongly suggest the core Laravel app existed before the hackathon and was committed as a bulk initial dump.",
+    "Single initial commit of ~16k LOC / 176 files makes it hard to verify work was authored during the window versus imported.",
+    "Bulk-commit and large-initial-commit flags both set, with most functional code arriving in the first commit rather than iteratively."
+  ]
+}
