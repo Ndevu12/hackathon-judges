@@ -1,0 +1,935 @@
+{
+  "by_repo": {
+    "https://github.com/ngtthanhthao-boop/cursor-odoo.git": {
+      "project": "IDB Team - Odoo + Cursor",
+      "raw_project_names": [
+        "IDB Team",
+        "IDB Team - Odoo + Cursor"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:19:10",
+          "score": 7,
+          "thoughts": "Their product combined with Cursor can lower the time to develop a new app within 1 week. They are a company and invested in building with Cursor for 2 years."
+        },
+        {
+          "timestamp": "11/29/2025 19:19:34",
+          "score": 4,
+          "thoughts": null
+        }
+      ],
+      "average_score": 5.5
+    },
+    "https://github.com/thtcsec/CursorHackathon": {
+      "project": "Quantum Bug ; Product name: AirDraw",
+      "raw_project_names": [
+        "Quantum Bug ; Product name: AirDraw",
+        "Team: Quantum Bug ; Product name: AirDraw"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:24:55",
+          "score": 8,
+          "thoughts": "good idea"
+        },
+        {
+          "timestamp": "11/29/2025 19:25:16",
+          "score": 6,
+          "thoughts": "they can technically show the camera detect hands drawing and answering but there is a glitch that the AI cannot detect what is being drawn"
+        },
+        {
+          "timestamp": "11/29/2025 19:25:19",
+          "score": 8,
+          "thoughts": "Very compelling drawing demo, a lot of features integrated in a short amount of time"
+        }
+      ],
+      "average_score": 7.333
+    },
+    "https://github.com/vhpx/dodo": {
+      "project": "Dodo",
+      "raw_project_names": [
+        "Dodo"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:29:37",
+          "score": 5,
+          "thoughts": "their idea is good but the demo  did not really work smoothly"
+        },
+        {
+          "timestamp": "11/29/2025 19:29:59",
+          "score": 5,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 19:30:31",
+          "score": 7,
+          "thoughts": "AI investigation game"
+        }
+      ],
+      "average_score": 5.667
+    },
+    "https://github.com/captain-corgi/cursor-hackathon-29NOV25": {
+      "project": "Team Corgi",
+      "raw_project_names": [
+        "Team Corgi"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:32:51",
+          "score": 5,
+          "thoughts": "Token usage tracker dashboard and cost estimator"
+        },
+        {
+          "timestamp": "11/29/2025 19:33:10",
+          "score": 8,
+          "thoughts": "their demo works, short and sweet"
+        },
+        {
+          "timestamp": "11/29/2025 19:33:30",
+          "score": 5,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/thsunkid/lightshow-threejs": {
+      "project": "Spotlightify",
+      "raw_project_names": [
+        "Spotlightify"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:37:38",
+          "score": 9,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 19:38:30",
+          "score": 7,
+          "thoughts": "Nice effects and well put together UI, good sync with music"
+        }
+      ],
+      "average_score": 8.0
+    },
+    "https://github.com/PhanMai010203/testcase": {
+      "project": "generate testcase",
+      "raw_project_names": [
+        "generate testcase"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:38:25",
+          "score": 6,
+          "thoughts": "I cannot really connect what they are trying solve"
+        },
+        {
+          "timestamp": "11/29/2025 21:24:16",
+          "score": 5,
+          "thoughts": "Test case generator from UI mocks or screens. Formats in the case that their own company expects, like a test spec"
+        },
+        {
+          "timestamp": "11/29/2025 21:24:20",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/knamnguyen/duma.so": {
+      "project": "Duma",
+      "raw_project_names": [
+        "Duma"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:41:18",
+          "score": 8,
+          "thoughts": "Small group event swiping app like Tinder + Luma, good presentation humor"
+        },
+        {
+          "timestamp": "11/29/2025 19:41:22",
+          "score": 9,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 19:41:29",
+          "score": 7,
+          "thoughts": "the speaker could speak well and show the app functioning"
+        }
+      ],
+      "average_score": 8.0
+    },
+    "https://github.com/huyencute11/hackathon": {
+      "project": "3Wolfs",
+      "raw_project_names": [
+        "3Wolfs"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:44:57",
+          "score": 7,
+          "thoughts": "Platform for coordinating relief to disaster victims, a bit basic, but very timely and useful"
+        },
+        {
+          "timestamp": "11/29/2025 19:44:59",
+          "score": 5,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 19:45:15",
+          "score": 8,
+          "thoughts": "A typical AI for good project and the speakers can show the app functioning"
+        }
+      ],
+      "average_score": 6.667
+    },
+    "https://github.com/PhucNg2k/CursorHackathon": {
+      "project": "Cursor DreamTeam",
+      "raw_project_names": [
+        "Cursor DreamTeam"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:47:49",
+          "score": 5,
+          "thoughts": "a trivial demo"
+        },
+        {
+          "timestamp": "11/29/2025 19:47:49",
+          "score": 4,
+          "thoughts": null
+        }
+      ],
+      "average_score": 4.5
+    },
+    "https://github.com/Welkie/Cursor-Hackathon-2025": {
+      "project": "HaiCaChua",
+      "raw_project_names": [
+        "HaiCaChua"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:51:46",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 7.0
+    },
+    "https://github.com/nvbinh15/hoggle": {
+      "project": "Hoggle",
+      "raw_project_names": [
+        "Hoggle"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:55:14",
+          "score": 9,
+          "thoughts": "Harry potter universe AR simulation, very fun demo, cool technical demo with a fun theme"
+        },
+        {
+          "timestamp": "11/29/2025 19:55:16",
+          "score": 9,
+          "thoughts": "fun :)) "
+        }
+      ],
+      "average_score": 9.0
+    },
+    "https://github.com/finalFlash159/exam-hub-cursor-hackathon": {
+      "project": "ExamBuddy",
+      "raw_project_names": [
+        "ExamBuddy"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:58:12",
+          "score": 8,
+          "thoughts": "Platform for students to prepare for exam by generating tests for the student to take. Good use-case, good demo"
+        },
+        {
+          "timestamp": "11/29/2025 19:58:34",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 8.0
+    },
+    "https://github.com/dxv2k/upvotify": {
+      "project": "Upvotify",
+      "raw_project_names": [
+        "Upvotify"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:01:55",
+          "score": 8,
+          "thoughts": "Reddit analytics using AI, which subreddits to target based on your website along with best practices. Basically an AI consultant for Reddit content strategy. Includes notifications and keyword tracking. Assign customer targeting score. If this is real and it actually works, would be a very useful platform for Reddit"
+        },
+        {
+          "timestamp": "11/29/2025 20:02:41",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 7.5
+    },
+    "https://github.com/supernovalx/tinder4decision-next": {
+      "project": "Decidr",
+      "raw_project_names": [
+        "Decidr"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:06:12",
+          "score": 8,
+          "thoughts": "\"20 questions\" for solving personal problems. AI as question generator you just swipe. Tinder for dilemas"
+        },
+        {
+          "timestamp": "11/29/2025 20:06:16",
+          "score": 9,
+          "thoughts": null
+        }
+      ],
+      "average_score": 8.5
+    },
+    "https://github.com/thaiviet07/greennoddles": {
+      "project": "Dalo",
+      "raw_project_names": [
+        "Dalo"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:08:48",
+          "score": 5,
+          "thoughts": "Rephraser for Zalo using AI. Will auto-change your tone"
+        },
+        {
+          "timestamp": "11/29/2025 20:09:09",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/meteordefect/olyetta": {
+      "project": "OLYETTA",
+      "raw_project_names": [
+        "OLYETTA"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:11:37",
+          "score": 8,
+          "thoughts": "AI co-host for interview, will ask you questions, can make a youtube video or podcast together"
+        },
+        {
+          "timestamp": "11/29/2025 20:11:37",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 8.0
+    },
+    "https://github.com/KCBF/CKHack": {
+      "project": "Eduflow",
+      "raw_project_names": [
+        "Eduflow",
+        "Eduflow by Kody"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:14:55",
+          "score": 5,
+          "thoughts": "Kind of like \"Brilliant\" for certain skills, like photography, physics. Like a collection of interactive web demos for different topics. Also anime girl"
+        },
+        {
+          "timestamp": "11/29/2025 20:15:14",
+          "score": 9,
+          "thoughts": null
+        }
+      ],
+      "average_score": 7.0
+    },
+    "https://github.com/vincenthsh/cursor-hcmc": {
+      "project": "Cacophony",
+      "raw_project_names": [
+        "Cacophony"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:17:54",
+          "score": 8,
+          "thoughts": "Apples to Apples but with AI music generation using Suno. "
+        },
+        {
+          "timestamp": "11/29/2025 20:18:15",
+          "score": 9,
+          "thoughts": null
+        }
+      ],
+      "average_score": 8.5
+    },
+    "https://github.com/theRaven1312/cursor-hackathon-2025": {
+      "project": "GeoSnap",
+      "raw_project_names": [
+        "GeoSnap"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:21:45",
+          "score": 7,
+          "thoughts": "Combo of Google maps, Instagram. Like a \"highlights\" based visual map"
+        },
+        {
+          "timestamp": "11/29/2025 20:21:53",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 7.5
+    },
+    "https://github.com/TienDat8605/CursorHackathon": {
+      "project": "FloodSim Sandbox",
+      "raw_project_names": [
+        "FloodSim Sandbox"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:29:03",
+          "score": 7,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 20:29:07",
+          "score": 8,
+          "thoughts": "Simulate the flood in an area based on geography"
+        }
+      ],
+      "average_score": 7.5
+    },
+    "https://github.com/EntyG/BaeFit": {
+      "project": "BaeFit",
+      "raw_project_names": [
+        "BaeFit",
+        "BaeFit - Megumin Virtual Assistant"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:33:24",
+          "score": 7,
+          "thoughts": "Nutrition tracker with Megumin as mascot chat app."
+        },
+        {
+          "timestamp": "11/29/2025 20:33:28",
+          "score": 9,
+          "thoughts": null
+        }
+      ],
+      "average_score": 8.0
+    },
+    "https://github.com/CursorHackathonDevAI2025VN/finding-team-game": {
+      "project": "HackTeamMatch",
+      "raw_project_names": [
+        "HackTeamMatch"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:36:44",
+          "score": 5,
+          "thoughts": "Hackathon team matching app. Fill out your skills, find other complementary team members. Has AI for suggestions"
+        },
+        {
+          "timestamp": "11/29/2025 20:36:47",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/GenyoNguyen/YouTubeLM": {
+      "project": "YouTubeLM",
+      "raw_project_names": [
+        "YouTubeLM"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:39:41",
+          "score": 5,
+          "thoughts": "A Youtube coach, helps you get more out of watching a video via summaries, Q&A, and quizzes. Like NotebookLM for Youtube. With timestamp based review"
+        },
+        {
+          "timestamp": "11/29/2025 20:40:02",
+          "score": 9,
+          "thoughts": null
+        }
+      ],
+      "average_score": 7.0
+    },
+    "https://github.com/lenhatquang97/hackathon-repo": {
+      "project": "1800-CreditCrawler",
+      "raw_project_names": [
+        "1800-CreditCrawler"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:43:17",
+          "score": 5,
+          "thoughts": "Like \"Screen Time\" but as a web app. AI assisted insights into screen time usage"
+        },
+        {
+          "timestamp": "11/29/2025 20:43:56",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/vphuocthinh2006/Smart-Resume-Analyzer": {
+      "project": "AI JOB FINDING ASSISTANT",
+      "raw_project_names": [
+        "AI JOB FINDING ASSISTANT"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:46:54",
+          "score": 4,
+          "thoughts": "Gives resume feedback given a JD, AI powered"
+        },
+        {
+          "timestamp": "11/29/2025 20:47:00",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/HhaMinh0310/workdate.dev": {
+      "project": "Really want a girlfriend:))",
+      "raw_project_names": [
+        "Really want a girlfriend:))"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:52:01",
+          "score": 4,
+          "thoughts": "Gamify doing things together with social responsibility. Can also find a buddy, networking/dating app"
+        },
+        {
+          "timestamp": "11/29/2025 20:52:20",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/billmnguyen/fretlab": {
+      "project": "FretLab",
+      "raw_project_names": [
+        "FretLab"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:54:52",
+          "score": 8,
+          "thoughts": "Team of 13/14 year old duo. Guitar tabs from a song, for learning. Really compelling young dynamic duo."
+        },
+        {
+          "timestamp": "11/29/2025 20:55:07",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 8.0
+    },
+    "https://github.com/lethanhan97/cursor-hackathon-hcmc-2025-cuso-cru": {
+      "project": "The CủSỏ Cru",
+      "raw_project_names": [
+        "The CủSỏ Cru"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:58:42",
+          "score": 9,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 20:59:11",
+          "score": 7,
+          "thoughts": "Face based music player for livestreamers. Really energetic demo, and cool tech PoC"
+        }
+      ],
+      "average_score": 8.0
+    },
+    "https://github.com/Travis-Houston/Luminus.ai.git": {
+      "project": "Luminus.ai",
+      "raw_project_names": [
+        "Luminus.ai"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:02:31",
+          "score": 4,
+          "thoughts": "AI assistant for HR analytics"
+        },
+        {
+          "timestamp": "11/29/2025 21:02:49",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/CrimsonDisk/Find-it": {
+      "project": "Find it!",
+      "raw_project_names": [
+        "Find it!"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:08:48",
+          "score": 3,
+          "thoughts": "Classic find the difference procedurally generated on a web UI. Big draw is no ads"
+        },
+        {
+          "timestamp": "11/29/2025 21:08:54",
+          "score": 6,
+          "thoughts": null
+        }
+      ],
+      "average_score": 4.5
+    },
+    "https://github.com/mquang248/Cursor_Hackathon_Project": {
+      "project": "HISTORYLENS",
+      "raw_project_names": [
+        "HISTORYLENS",
+        "HISTORYLENS - LĂNG KÍNH LỊCH SỬ"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:12:29",
+          "score": 5,
+          "thoughts": "Simulated social media network about past events to learn history. A more brain rot way to learn history."
+        },
+        {
+          "timestamp": "11/29/2025 21:12:30",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.5
+    },
+    "https://github.com/Smiling-17/hackathon.git": {
+      "project": "CyberGuard",
+      "raw_project_names": [
+        "CyberGuard"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:16:16",
+          "score": 7,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 21:16:18",
+          "score": 4,
+          "thoughts": "Demo didn't really work"
+        }
+      ],
+      "average_score": 5.5
+    },
+    "https://github.com/SubaruLenz/Hackathon-backend": {
+      "project": "FinancialFriend",
+      "raw_project_names": [
+        "FinancialFriend",
+        "finance Flow"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:27:54",
+          "score": 4,
+          "thoughts": "Financial advisor for personal spending habits with AI chat"
+        },
+        {
+          "timestamp": "11/29/2025 21:28:15",
+          "score": 5,
+          "thoughts": null
+        }
+      ],
+      "average_score": 4.5
+    },
+    "https://github.com/DioAnh/anhquan": {
+      "project": "Enduca",
+      "raw_project_names": [
+        "Enduca"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:31:17",
+          "score": 4,
+          "thoughts": "Education platform for young kids. Kids can quiz themselves on Youtube videos. Practice difficult real life situations. "
+        },
+        {
+          "timestamp": "11/29/2025 21:31:18",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/trandinhduc/CursorHKT_Git": {
+      "project": "VN Support",
+      "raw_project_names": [
+        "VN Support"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:35:14",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 7.0
+    },
+    "https://github.com/huythanhnguyen/hackathon_cursor_29_Nov": {
+      "project": "BillionaireTwin (Thanh/Giang/Dung)",
+      "raw_project_names": [
+        "BillionaireTwin",
+        "BillionaireTwin (Thanh/Giang/Dung)"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:38:36",
+          "score": 4,
+          "thoughts": "Use face vectors to match with closest billionaire twin"
+        },
+        {
+          "timestamp": "11/29/2025 21:38:42",
+          "score": 5,
+          "thoughts": null
+        }
+      ],
+      "average_score": 4.5
+    },
+    "https://github.com/kics223w1/fe-cursor": {
+      "project": "CursorSharing",
+      "raw_project_names": [
+        "CursorSharing"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:41:51",
+          "score": 7,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 21:42:08",
+          "score": 3,
+          "thoughts": "A platform for sharing how you use Cursor and showing aggregate user reported stats. Basically a Cursor survey site"
+        }
+      ],
+      "average_score": 5.0
+    },
+    "https://github.com/itsmesailee/Off-Clock": {
+      "project": "Off Clock",
+      "raw_project_names": [
+        "Off Clock",
+        "off clock"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:44:59",
+          "score": 5,
+          "thoughts": "A digital ritual app for clocking out of work. Like a mindfulness app for end of day"
+        },
+        {
+          "timestamp": "11/29/2025 21:45:19",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.0
+    },
+    "https://github.com/ltrphung0620/CursorAI-Hackathon/tree/dc09c52451be103c6e53643d688a0a512b9341ce/V2H": {
+      "project": "SmartPrep AI",
+      "raw_project_names": [
+        "SmartPrep AI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:49:21",
+          "score": 6,
+          "thoughts": "Test prep for students, upload knowledge, build graph, create quizes based on student level"
+        },
+        {
+          "timestamp": "11/29/2025 21:49:24",
+          "score": 5,
+          "thoughts": null
+        }
+      ],
+      "average_score": 5.5
+    },
+    "https://github.com/dinhthuan98personal/PromptOfPrompt": {
+      "project": "Lười Prompt",
+      "raw_project_names": [
+        "Lười Prompt"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:53:10",
+          "score": 3,
+          "thoughts": "AI prompt optimizer. Input prompt, get feedback and improvement suggestions"
+        },
+        {
+          "timestamp": "11/29/2025 21:53:18",
+          "score": 6,
+          "thoughts": null
+        }
+      ],
+      "average_score": 4.5
+    },
+    "https://github.com/VinhVU273/Visual-Dashboard": {
+      "project": "UA in the game",
+      "raw_project_names": [
+        "UA in the game"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:57:42",
+          "score": 3,
+          "thoughts": "A top down view for creative marketers. Upload many videos. AI analyzes patterns and copy, extract patterns."
+        },
+        {
+          "timestamp": "11/29/2025 21:57:51",
+          "score": 7,
+          "thoughts": null
+        }
+      ],
+      "average_score": 5.0
+    },
+    "https://github.com/agent-kali/menu-oi": {
+      "project": "Menu Oi",
+      "raw_project_names": [
+        "Menu Oi"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:00:37",
+          "score": 5,
+          "thoughts": "QR menu solution for restaurants. All web driven. Owner can create menu, customer just scan, multi language support"
+        },
+        {
+          "timestamp": "11/29/2025 22:00:59",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.5
+    },
+    "https://github.com/neiltron/apple-health-mcp": {
+      "project": "HanaCare Health Kit",
+      "raw_project_names": [
+        "HanaCare Health Kit"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:04:44",
+          "score": 5,
+          "thoughts": "MCP server for healthcare data from wearables, to chat with your health"
+        },
+        {
+          "timestamp": "11/29/2025 22:05:00",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 6.5
+    },
+    "https://github.com/TanDoan1234/MediScanAI": {
+      "project": "MediScan AI",
+      "raw_project_names": [
+        "MediScan AI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:07:27",
+          "score": 7,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 22:08:35",
+          "score": 4,
+          "thoughts": "Health advice based on camera and images"
+        }
+      ],
+      "average_score": 5.5
+    },
+    "https://github.com/hanious/presentation-bot": {
+      "project": "SLAI",
+      "raw_project_names": [
+        "SLAI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:12:56",
+          "score": 7,
+          "thoughts": "Slide generation AI. Enter text and style, get slides out"
+        },
+        {
+          "timestamp": "11/29/2025 22:12:58",
+          "score": 8,
+          "thoughts": null
+        }
+      ],
+      "average_score": 7.5
+    },
+    "https://github.com/zakharteshukov/cursorHackathon": {
+      "project": "World Bias AI",
+      "raw_project_names": [
+        "World Bias",
+        "World Bias AI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:17:19",
+          "score": 9,
+          "thoughts": null
+        },
+        {
+          "timestamp": "11/29/2025 22:17:52",
+          "score": 8,
+          "thoughts": "Young student team of 3. Tackling bias in world news. Analyzes sources for credibility and bias. "
+        }
+      ],
+      "average_score": 8.5
+    },
+    "https://github.com/quanngynx/VNG.cursor-hackathon": {
+      "project": "PizzaScammer",
+      "raw_project_names": [
+        "PizzaScammer",
+        "ZALO_NUTRICHAT"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:20:19",
+          "score": 4,
+          "thoughts": "Food idea and nutrition generator based on user intent. Also generates recipies in a nice UI. Comes with AI generated images. Estimate health impact from consumption"
+        },
+        {
+          "timestamp": "11/29/2025 22:20:44",
+          "score": 6,
+          "thoughts": null
+        }
+      ],
+      "average_score": 5.0
+    }
+  },
+  "unmapped_responses": [
+    {
+      "project": "AI personal finance assistant",
+      "timestamp": "11/29/2025 19:51:46",
+      "score": 6,
+      "thoughts": "a realistic idea and the demo barely works"
+    }
+  ]
+}
