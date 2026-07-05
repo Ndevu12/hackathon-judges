@@ -558,7 +558,14 @@ This file is the main artifact used by judges to spot deviations across all repo
 
 ### 13.1 Purpose
 
-For each repo with metrics, generate a **short-form AI analysis** and write it to `work/ai_outputs/<repo_id>.txt`. The provider is the configurable `ai.command` template (`codex` by default); `{model}`/`{prompt}` are substituted, and `ai.prompt_via_stdin` selects argument vs. stdin delivery. See the Configuration section.
+For each repo with metrics, ask **Claude** (via the official `anthropic` SDK) for a
+**structured** authenticity analysis and write `work/ai_outputs/<repo_id>.json`
+(`{verdict, confidence, summary, observations[], red_flags[]}`) plus a
+human-readable `<repo_id>.txt`. Structured outputs make the verdict reliable data
+the dashboard renders directly (no regex on prose). The `ai` config section is
+fully configurable — `model` (default `claude-opus-4-8`, any Claude model),
+`base_url`, `max_tokens`, `effort`, `thinking` — and the API key is read from
+`ANTHROPIC_API_KEY` (env or an untracked `.env`), never config.
 
 ### 13.2 Additional input files
 

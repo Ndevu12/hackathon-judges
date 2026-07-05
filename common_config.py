@@ -23,8 +23,9 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 
 # Built-in defaults. ``window.t0``/``window.t1`` are None so that, absent both a
@@ -49,17 +50,16 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "bulk_files_threshold": 50,
         "time_buckets_hours": [3, 6, 12, 24],
     },
+    # Optional AI authenticity analysis via the Anthropic (Claude) API. The API
+    # key is a secret read from ANTHROPIC_API_KEY (env or a .env file), never here.
+    # Fully configurable: swap the model, point base_url elsewhere, toggle thinking.
     "ai": {
-        # Command template. "{model}" and "{prompt}" are substituted per repo.
-        # Set prompt_via_stdin=true to feed the prompt on stdin instead of as an
-        # argument (drop the "{prompt}" slot when you do).
-        "command": [
-            "codex", "--yolo", "exec", "--sandbox", "danger-full-access",
-            "--model", "{model}", "{prompt}",
-        ],
-        "model": "gpt-5.1-codex-mini",
-        "prompt_via_stdin": False,
-        "timeout_seconds": 600,
+        "provider": "anthropic",
+        "model": "claude-opus-4-8",
+        "base_url": None,          # optional; else ANTHROPIC_BASE_URL / SDK default
+        "max_tokens": 8000,
+        "effort": "high",          # low|medium|high|xhigh|max; null to omit
+        "thinking": True,          # adaptive thinking; set false for models without it
         "readme_char_limit": 4000,
         "tree_max_entries": 200,
         "tree_max_depth": 3,
@@ -100,14 +100,37 @@ def _apply_legacy_shim(raw: Dict[str, Any]) -> Dict[str, Any]:
     return raw
 
 
+def load_dotenv(path: Optional[Path] = None) -> None:
+    """Load ``KEY=VALUE`` lines from a ``.env`` file into ``os.environ``.
+
+    Defaults to a ``.env`` beside this module (the repo root). Existing
+    environment variables are never overwritten. This lets secrets like
+    ``HACKATHON_API_KEY`` and ``ANTHROPIC_API_KEY`` live in an untracked ``.env``
+    instead of the shell profile or the committed config.
+    """
+    env_path = Path(path) if path else Path(__file__).resolve().parent / ".env"
+    if not env_path.exists():
+        return
+    for raw in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
 def load_config(path: Optional[Path]) -> Dict[str, Any]:
     """Return the effective configuration: defaults deep-merged with the file.
 
     ``path`` of None yields a deep copy of the defaults (so scripts run without a
     ``--config`` flag). A path that does not exist raises ``FileNotFoundError``;
     invalid JSON or a non-object top level raises ``ValueError`` with a message
-    naming the file.
+    naming the file. Also loads a ``.env`` file (if present) into the environment.
     """
+    load_dotenv()
     merged = copy.deepcopy(DEFAULT_CONFIG)
     if path is None:
         return merged
@@ -199,33 +222,20 @@ def bucket_index(hours: float, boundaries: List[Any]) -> int:
     return len(boundaries)
 
 
-def build_ai_command(
-    command: List[str],
-    model: Optional[str],
-    prompt: str,
-    prompt_via_stdin: bool,
-) -> Tuple[List[str], Optional[str]]:
-    """Build the AI subprocess argv from a command template.
-
-    ``{model}`` is substituted in every argument; ``{prompt}`` is substituted
-    with the prompt unless ``prompt_via_stdin`` is set, in which case the
-    ``{prompt}`` slot is dropped and the prompt is returned as stdin data.
-
-    Returns ``(argv, stdin_data)`` where ``stdin_data`` is None when the prompt
-    is passed as an argument.
-    """
-    if not command:
-        raise ValueError("ai.command must be a non-empty list")
-    model_str = "" if model is None else str(model)
-    argv: List[str] = []
-    for part in command:
-        part = part.replace("{model}", model_str)
-        if "{prompt}" in part:
-            if prompt_via_stdin:
-                continue  # prompt is delivered on stdin instead of as an argument
-            part = part.replace("{prompt}", prompt)
-        if part == "":
-            continue  # skip an argument that substituted away to nothing
-        argv.append(part)
-    stdin_data = prompt if prompt_via_stdin else None
-    return argv, stdin_data
+def build_analysis_schema() -> Dict[str, Any]:
+    """JSON schema for the structured authenticity analysis returned per repo."""
+    return {
+        "type": "object",
+        "properties": {
+            "verdict": {
+                "type": "string",
+                "enum": ["authentic", "suspicious", "highly_suspicious", "inconclusive"],
+            },
+            "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+            "summary": {"type": "string"},
+            "observations": {"type": "array", "items": {"type": "string"}},
+            "red_flags": {"type": "array", "items": {"type": "string"}},
+        },
+        "required": ["verdict", "confidence", "summary", "observations", "red_flags"],
+        "additionalProperties": False,
+    }

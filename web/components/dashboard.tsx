@@ -21,7 +21,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
 
   const submissionFor = (repoId: string): SubmissionInfo | null =>
     data.submissions[repoId] ?? null;
-  const aiFor = (repoId: string) => data.details[repoId]?.aiText ?? null;
+  const aiFor = (repoId: string) => data.details[repoId]?.ai ?? null;
 
   const visibleRows = useMemo(() => {
     const rows = data.rows.filter((r) => {

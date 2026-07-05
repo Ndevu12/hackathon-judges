@@ -1,18 +1,52 @@
 #!/usr/bin/env python3
 """
-Optional AI analysis runner using a configurable CLI (see ai.command in config).
+Optional AI authenticity analysis via the Anthropic (Claude) API.
+
+For each analyzed repo, asks Claude — using structured output — whether the
+project's commit pattern and code look consistent with being built during the
+hackathon window, and writes:
+  - work/ai_outputs/<id>.json : the structured verdict (consumed by the dashboard)
+  - work/ai_outputs/<id>.txt  : a human-readable rendering
+
+Configuration lives in config.json's `ai` section (model, base_url, max_tokens,
+effort, thinking, truncation limits) — all overridable. The API key is read from
+ANTHROPIC_API_KEY (shell env or an untracked .env file), never from config.
+Requires: pip install anthropic
 """
 
 import argparse
 import json
 import logging
-import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from textwrap import shorten
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from common_config import build_ai_command, load_config, override_from_cli  # noqa: E402
+from common_config import build_analysis_schema, load_config, override_from_cli  # noqa: E402
+
+try:
+    import anthropic
+except ImportError:
+    anthropic = None
+
+
+SYSTEM_PROMPT = (
+    "You are assisting judges reviewing hackathon submissions. Given a repo's "
+    "commit metrics and code context, assess whether the project was genuinely "
+    "built during the hackathon window. Be concise, specific, and fair: modern "
+    "AI coding tools make large output normal, so weigh commit timing and "
+    "patterns (pre-T0 commits, bulk dumps, initial-commit size) over raw volume. "
+    "Return only the requested structured fields."
+)
+
+# Map the structured verdict to a phrase for the human-readable .txt rendering.
+VERDICT_PHRASE = {
+    "authentic": "looks consistent with a hackathon project",
+    "suspicious": "some suspicious patterns",
+    "highly_suspicious": "highly suspicious",
+    "inconclusive": "inconclusive — limited signal",
+}
 
 
 def load_submissions_map(work_dir: Path) -> dict:
@@ -98,32 +132,89 @@ def build_prompt(
     )
 
 
+def make_client(ai_cfg: dict, api_key: str | None):
+    """Construct the Anthropic client; key resolves from --api-key then env/.env."""
+    kwargs = {}
+    if api_key:
+        kwargs["api_key"] = api_key
+    if ai_cfg.get("base_url"):
+        kwargs["base_url"] = ai_cfg["base_url"]
+    return anthropic.Anthropic(**kwargs)
+
+
+def analyze(client, ai_cfg: dict, prompt: str) -> dict:
+    """Call Claude with structured output and return the parsed analysis dict."""
+    output_config = {"format": {"type": "json_schema", "schema": build_analysis_schema()}}
+    if ai_cfg.get("effort"):
+        output_config["effort"] = ai_cfg["effort"]
+    kwargs = {
+        "model": ai_cfg["model"],
+        "max_tokens": ai_cfg["max_tokens"],
+        "system": SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": prompt}],
+        "output_config": output_config,
+    }
+    if ai_cfg.get("thinking"):
+        kwargs["thinking"] = {"type": "adaptive"}
+
+    response = client.messages.create(**kwargs)
+    if response.stop_reason == "refusal":
+        raise RuntimeError("model refused the request")
+    text = next((block.text for block in response.content if block.type == "text"), "")
+    if not text:
+        raise RuntimeError("model returned no text content")
+    return json.loads(text)
+
+
+def render_txt(analysis: dict) -> str:
+    """Human-readable rendering. The verdict line matches what the UI parses."""
+    lines = [analysis.get("summary", "").strip(), ""]
+    for obs in analysis.get("observations", []):
+        lines.append(f"- {obs}")
+    if analysis.get("red_flags"):
+        lines.append("")
+        lines.append("Red flags:")
+        for flag in analysis["red_flags"]:
+            lines.append(f"- {flag}")
+    verdict = analysis.get("verdict", "inconclusive")
+    lines.append("")
+    lines.append(f"Overall authenticity assessment: {VERDICT_PHRASE.get(verdict, verdict)}")
+    return "\n".join(lines).strip() + "\n"
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run optional AI analysis via a configurable CLI.")
+    parser = argparse.ArgumentParser(description="Run AI authenticity analysis via the Claude API.")
     parser.add_argument("--config", help="Path to config.json")
     parser.add_argument("--work-dir", help="Work directory (default: paths.work_dir from config)")
     parser.add_argument("--only-id", help="Run AI analysis only for this repo id")
-    parser.add_argument("--model", help="Model name (overrides ai.model from config)")
+    parser.add_argument("--model", help="Model (overrides ai.model from config)")
+    parser.add_argument("--base-url", help="API base URL (overrides ai.base_url)")
+    parser.add_argument("--api-key", help="API key (overrides the ANTHROPIC_API_KEY env var)")
     args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logger = logging.getLogger("ai")
+
+    if anthropic is None:
+        logger.error("The anthropic SDK is not installed. Run: pip install anthropic")
+        return
 
     config = load_config(Path(args.config) if args.config else None)
     override_from_cli(
         config,
-        {
-            "paths.work_dir": args.work_dir,
-            "ai.model": args.model,
-        },
+        {"paths.work_dir": args.work_dir, "ai.model": args.model, "ai.base_url": args.base_url},
     )
     ai_cfg = config["ai"]
     paths_cfg = config["paths"]
+
+    if ai_cfg.get("provider", "anthropic") != "anthropic":
+        logger.error("Unsupported ai.provider %r (only 'anthropic' is built in).", ai_cfg["provider"])
+        return
 
     work_dir = Path(paths_cfg["work_dir"])
     metrics_dir = work_dir / "metrics"
     ai_outputs_dir = work_dir / "ai_outputs"
     ai_outputs_dir.mkdir(parents=True, exist_ok=True)
-
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    logger = logging.getLogger("ai")
 
     repos_map = load_submissions_map(work_dir)
     if not repos_map:
@@ -131,13 +222,13 @@ def main() -> None:
         return
     context_path = Path(paths_cfg["ai_context"])
     template_path = Path(paths_cfg["ai_prompt_template"])
-
     if not context_path.exists() or not template_path.exists():
         logger.error("Missing AI context or template files.")
         return
 
     hackathon_context = load_text(context_path)
     prompt_template = load_text(template_path)
+    client = make_client(ai_cfg, args.api_key)
 
     if args.only_id:
         target_ids = [args.only_id]
@@ -177,43 +268,31 @@ def main() -> None:
             readme_snippet,
         )
 
-        argv, stdin_data = build_ai_command(
-            ai_cfg["command"], ai_cfg["model"], prompt, ai_cfg["prompt_via_stdin"]
-        )
-        output_path = ai_outputs_dir / f"{repo_id}.txt"
-        logger.info("Running %s for %s", argv[0], repo_id)
+        logger.info("Analyzing %s with %s", repo_id, ai_cfg["model"])
         try:
-            result = subprocess.run(
-                argv,
-                input=stdin_data,
-                capture_output=True,
-                text=True,
-                timeout=ai_cfg["timeout_seconds"],
+            analysis = analyze(client, ai_cfg, prompt)
+        except anthropic.AuthenticationError:
+            logger.error(
+                "Authentication failed. Set ANTHROPIC_API_KEY in your environment "
+                "or a .env file (or pass --api-key)."
             )
-        except FileNotFoundError as exc:
-            logger.error("AI command %r not found: %s", argv[0], exc)
-            output_path.write_text(
-                f"ERROR: AI command not available: {argv[0]}\n", encoding="utf-8"
-            )
-            continue
-        except subprocess.TimeoutExpired:
-            logger.error("AI command timed out for %s", repo_id)
-            output_path.write_text(
-                f"ERROR: AI command timed out after {ai_cfg['timeout_seconds']}s\n",
-                encoding="utf-8",
-            )
+            return
+        except Exception as exc:
+            logger.error("Analysis failed for %s: %s", repo_id, exc)
             continue
 
-        if result.returncode != 0:
-            logger.error("AI command failed for %s: %s", repo_id, result.stderr.strip())
-            output_path.write_text(
-                f"ERROR: AI command failed ({result.returncode})\n{result.stderr}",
-                encoding="utf-8",
-            )
-            continue
-
-        output_path.write_text(result.stdout, encoding="utf-8")
-        logger.info("Wrote AI output to %s", output_path)
+        record = {
+            "repo_id": repo_id,
+            "repo": repo,
+            "model": ai_cfg["model"],
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            **analysis,
+        }
+        (ai_outputs_dir / f"{repo_id}.json").write_text(
+            json.dumps(record, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        (ai_outputs_dir / f"{repo_id}.txt").write_text(render_txt(analysis), encoding="utf-8")
+        logger.info("Wrote analysis for %s (%s)", repo_id, analysis.get("verdict"))
 
 
 if __name__ == "__main__":

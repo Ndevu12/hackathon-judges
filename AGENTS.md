@@ -9,9 +9,9 @@
 - Outputs: `work/` is the sandbox for clones, metrics, AI summaries, logs, summary, and `submissions.json`; safe to delete/regenerate.
 
 ## Build, Test, and Development Commands
-- Set `HACKATHON_API_KEY` in the environment (the API key; never commit it). All scripts take `--config config.json`; settings resolve as CLI flag > config.json > built-in default.
+- Put secrets in an untracked `.env` (copy `.env.example`): `HACKATHON_API_KEY` (scan) and `ANTHROPIC_API_KEY` (AI). Every script loads `.env` automatically. All scripts take `--config config.json`; settings resolve as CLI flag > config.json > built-in default.
 - `python3 scan.py --config config.json`: fetch submissions from the API, clone repos, compute metrics, write `work/submissions.json`; `--force` recomputes, `--no-update` skips git refresh, `--time-buckets`/`--bulk-*` override detection knobs.
-- `python3 ai/run_ai.py --config config.json [--only-id <repo>]`: produce AI notes once metrics exist (provider is the configurable `ai.command`; reads `work/submissions.json`).
+- `python3 ai/run_ai.py --config config.json [--only-id <repo>]`: AI authenticity analysis via the Claude API (structured output → `work/ai_outputs/<id>.json`; reads `work/submissions.json`). Needs `pip install -r requirements.txt` + `ANTHROPIC_API_KEY`; `--model`/`--base-url`/`--api-key` override.
 - `python3 list_submissions.py --config config.json`: list teams with repo + live URLs from the API.
 - `cd web && npm run dev`: run the dashboard; `npm run sync` freezes `work/` into `web/snapshot/` for deploy.
 - Use `python3 <script> --help` for full flag descriptions.
@@ -33,8 +33,8 @@
 - PRs should describe the change, the commands run, and any datasets or sample repos used; include screenshots for UI adjustments.
 
 ## Security & Configuration Tips
-- The hackathon API key is a secret: provide it via `HACKATHON_API_KEY` (or `--api-key`), never in `config.json` or git. `config.json` holds only public settings (times, thresholds, paths, AI command, API base URL).
+- Secrets (`HACKATHON_API_KEY`, `ANTHROPIC_API_KEY`) come from the environment or an untracked `.env`, never `config.json` or git. `config.json` holds only public settings (times, thresholds, paths, model, base URLs).
 - The API returns member emails (PII); they surface in the dashboard, which is admin-facing — be mindful before sharing a deployed link.
-- The AI command is user-configurable and executed via subprocess without a shell — only point it at trusted binaries.
+- AI analysis calls the Anthropic API directly (no subprocess/CLI); model and `base_url` are configurable via the `ai` section.
 - Avoid committing `work/` outputs unless explicitly requested; they are reproducible and can be large.
 - Verify cloned repos come from trusted sources; this tool executes git operations and parses repo contents locally.

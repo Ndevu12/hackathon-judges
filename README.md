@@ -6,8 +6,10 @@ Local CLI for judges: pull hackathon submissions from the event's public API, cl
 
 ## Requirements
 - macOS with `python3` (3.10+) and `git` in PATH
-- **`HACKATHON_API_KEY`** environment variable — the hackathon API key (shared with admins only)
-- Optional: an AI CLI for summaries — `codex` by default, or any command you configure (e.g. the `claude` CLI). See [AI Analysis](#ai-analysis-optional).
+- **`HACKATHON_API_KEY`** — the hackathon API key (admins only)
+- Optional (AI analysis): `pip install -r requirements.txt` (the `anthropic` SDK) and an **`ANTHROPIC_API_KEY`**. See [AI Analysis](#ai-analysis-optional).
+
+Both keys can live in an untracked **`.env`** file (copy `.env.example` → `.env`); every script loads it automatically.
 
 ## Layout
 ```text
@@ -39,7 +41,7 @@ Settings live in `config.json` (start from `config.example.json`), organized int
 | `api` | `base_url` + `public_endpoint`. **The key is never here** — it comes from `HACKATHON_API_KEY`. |
 | `paths` | `work_dir`, `ai_context`, `ai_prompt_template`. |
 | `detection` | Bulk-commit thresholds and the config-driven `time_buckets_hours`. |
-| `ai` | The pluggable AI command, model, and truncation limits. |
+| `ai` | Claude analysis: `model`, `base_url`, `max_tokens`, `effort`, `thinking`, truncation limits. Key comes from `ANTHROPIC_API_KEY`. |
 
 **Precedence: CLI flag → `config.json` → built-in default.** Every script takes `--config PATH`.
 
@@ -71,27 +73,32 @@ cd web && npm install && npm run dev   # http://localhost:3000
 See [web/README.md](web/README.md) for the snapshot/deploy flow.
 
 ## AI Analysis (optional)
-1) Fill `ai/hackathon_context.md` with event details/rules.
-2) Adjust `ai/prompt_template.txt` if desired.
+Analyzes each repo with **Claude** (via the official `anthropic` SDK) and returns a
+**structured** authenticity verdict — no external CLI, no regex on model output.
+
+1) `pip install -r requirements.txt` and set `ANTHROPIC_API_KEY` (env or `.env`).
+2) Fill `ai/hackathon_context.md` with event details/rules; tweak `ai/prompt_template.txt` if desired.
 3) After metrics exist (i.e. after `scan.py`), run:
 ```bash
 python3 ai/run_ai.py --config config.json
 ```
-Use `--only-id team-alpha` to limit to one repo, and `--model <name>` to override the model. It reads `work/submissions.json` for the repo list, so run `scan.py` first.
+`--only-id <repo>` limits to one repo; `--model`, `--base-url`, `--api-key` override config/env. It reads `work/submissions.json`, so run `scan.py` first.
 
-**Pluggable provider.** The `ai.command` in your config is a command template run once per repo. `{model}` and `{prompt}` are substituted; set `ai.prompt_via_stdin: true` to feed the prompt on stdin instead of as an argument. No shell is invoked.
+Per repo it writes `work/ai_outputs/<id>.json` — `{ verdict, confidence, summary, observations[], red_flags[] }` — which the dashboard renders (verdict badge, confidence, red-flags), plus a human-readable `<id>.txt`.
 
+**Fully configurable — not tied to one model.** The `ai` section:
 ```jsonc
-// codex (default)
-"command": ["codex", "--yolo", "exec", "--sandbox", "danger-full-access", "--model", "{model}", "{prompt}"],
-"model": "gpt-5.1-codex-mini", "prompt_via_stdin": false
-
-// claude CLI, prompt on stdin
-"command": ["claude", "-p", "--model", "{model}"],
-"model": "claude-sonnet-4-5", "prompt_via_stdin": true
+"ai": {
+  "provider": "anthropic",
+  "model": "claude-opus-4-8",   // any Claude model (opus / sonnet / haiku)
+  "base_url": null,             // or point at a compatible endpoint / ANTHROPIC_BASE_URL
+  "max_tokens": 8000,
+  "effort": "high",             // low|medium|high|xhigh|max; null to omit
+  "thinking": true,             // adaptive thinking; set false for models without it
+  "readme_char_limit": 4000, "tree_max_entries": 200, "tree_max_depth": 3
+}
 ```
-
-Other `ai` knobs: `timeout_seconds` (`null` = unbounded), `readme_char_limit`, `tree_max_entries`, `tree_max_depth`.
+The key is **never** in config — it's read from `ANTHROPIC_API_KEY`.
 
 ## List submissions
 `python3 list_submissions.py --config config.json` prints teams in submission order with their repo + live URLs (from the API).

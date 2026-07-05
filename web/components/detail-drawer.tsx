@@ -7,9 +7,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Card } from "@/components/ui/card";
-import type { RepoDetail, SubmissionInfo } from "@/lib/types";
+import type { AiAnalysis, RepoDetail, SubmissionInfo } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { extractVerdict, splitAtVerdict } from "@/lib/verdict";
+import { verdictDisplay } from "@/lib/verdict";
 import { CommitsTable } from "./commits-table";
 
 interface Props {
@@ -33,29 +33,46 @@ function MetricCard({ title, data }: { title: string; data: unknown }) {
   );
 }
 
-function AiSection({ aiText }: { aiText: string | null }) {
-  if (!aiText) {
+function AiSection({ ai }: { ai: AiAnalysis | null }) {
+  if (!ai) {
     return (
       <p className="rounded-lg border border-border-subtle bg-bg-subtle p-4 text-sm text-muted-foreground">
         No AI analysis available for this submission.
       </p>
     );
   }
-  const { head, verdict } = splitAtVerdict(aiText);
-  const tone = extractVerdict(aiText).tone;
-  const verdictClass =
-    tone === "authentic"
+  const verdict = verdictDisplay(ai);
+  const toneClass =
+    verdict.tone === "authentic"
       ? "bg-ok/10 text-ok"
-      : tone === "neutral"
-        ? "bg-warn/10 text-warn"
-        : "bg-danger/10 text-danger";
+      : verdict.tone === "suspicious"
+        ? "bg-danger/10 text-danger"
+        : "bg-warn/10 text-warn";
   return (
-    <div className="rounded-lg border border-border-subtle bg-bg-subtle p-4 text-sm leading-relaxed whitespace-pre-wrap text-text-secondary">
-      {head}
-      {verdict && (
-        <span className={cn("mt-3 inline-block rounded-md px-3 py-1.5 text-[0.8rem] font-semibold", verdictClass)}>
-          {verdict}
+    <div className="rounded-lg border border-border-subtle bg-bg-subtle p-4 text-sm text-text-secondary">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <span className={cn("inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[0.8rem] font-semibold", toneClass)}>
+          {verdict.icon} {verdict.label}
         </span>
+        <span className="text-xs text-muted-foreground">confidence: {ai.confidence}</span>
+      </div>
+      {ai.summary && <p className="leading-relaxed text-foreground">{ai.summary}</p>}
+      {ai.observations.length > 0 && (
+        <ul className="mt-3 list-disc space-y-1 pl-5 leading-relaxed">
+          {ai.observations.map((obs, i) => (
+            <li key={i}>{obs}</li>
+          ))}
+        </ul>
+      )}
+      {ai.red_flags.length > 0 && (
+        <div className="mt-3">
+          <div className="mb-1 text-[0.7rem] font-semibold tracking-wide text-danger uppercase">Red flags</div>
+          <ul className="list-disc space-y-1 pl-5 text-danger">
+            {ai.red_flags.map((flag, i) => (
+              <li key={i}>{flag}</li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
@@ -129,7 +146,7 @@ export function DetailDrawer({ detail, submission, open, onOpenChange }: Props) 
               </section>
               <section>
                 <h3 className={sectionTitle}>AI Analysis</h3>
-                <AiSection aiText={detail.aiText} />
+                <AiSection ai={detail.ai} />
               </section>
               <div className="grid grid-cols-3 gap-3">
                 <MetricCard title="Summary" data={detail.metrics?.summary} />

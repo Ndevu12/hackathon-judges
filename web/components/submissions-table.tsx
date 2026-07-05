@@ -1,6 +1,6 @@
 "use client";
 
-import type { SubmissionInfo, SummaryRow } from "@/lib/types";
+import type { AiAnalysis, SubmissionInfo, SummaryRow } from "@/lib/types";
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import { AIPreview } from "./ai-preview";
 interface Props {
   rows: SummaryRow[];
   submissionFor: (repoId: string) => SubmissionInfo | null;
-  aiFor: (repoId: string) => string | null;
+  aiFor: (repoId: string) => AiAnalysis | null;
   selectedId: string | null;
   onSelect: (repoId: string) => void;
 }
@@ -121,8 +121,8 @@ export function SubmissionsTable({ rows, submissionFor, aiFor, selectedId, onSel
                   <TableCell className="text-center"><FlagBadge value={row.has_bulk_commits} /></TableCell>
                   <TableCell className="text-center"><FlagBadge value={row.has_large_initial_commit_after_t0} /></TableCell>
                   <TableCell className="text-center"><FlagBadge value={row.has_merge_commits} /></TableCell>
-                  <TableCell className="text-center"><VerdictBadge aiText={ai} /></TableCell>
-                  <TableCell className="max-w-[320px] min-w-[200px] whitespace-normal"><AIPreview aiText={ai} /></TableCell>
+                  <TableCell className="text-center"><VerdictBadge ai={ai} /></TableCell>
+                  <TableCell className="max-w-[320px] min-w-[200px] whitespace-normal"><AIPreview ai={ai} /></TableCell>
                 </TableRow>
               );
             })

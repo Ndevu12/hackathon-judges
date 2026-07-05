@@ -1,0 +1,3 @@
+# Only needed for the optional AI analysis (ai/run_ai.py).
+# The core CLI (scan.py, list_submissions.py) is standard-library only.
+anthropic

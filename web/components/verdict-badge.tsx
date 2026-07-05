@@ -1,13 +1,13 @@
-import { extractVerdict } from "@/lib/verdict";
+import type { AiAnalysis } from "@/lib/types";
+import { verdictDisplay } from "@/lib/verdict";
 import { cn } from "@/lib/utils";
 
-// AI authenticity verdict icon with a native title tooltip (parity with the
-// original ⚠️/✅/➖/⏳ mapping).
-export function VerdictBadge({ aiText }: { aiText: string | null }) {
-  const verdict = extractVerdict(aiText);
+// AI authenticity verdict icon (from structured analysis) with a title tooltip.
+export function VerdictBadge({ ai }: { ai: AiAnalysis | null }) {
+  const verdict = verdictDisplay(ai);
   return (
     <span
-      title={verdict.full}
+      title={ai?.summary || verdict.label}
       className={cn(
         "cursor-help text-lg",
         verdict.tone === "pending" && "opacity-50",

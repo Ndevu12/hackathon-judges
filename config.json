@@ -19,10 +19,12 @@
     "time_buckets_hours": [3, 6, 12, 24]
   },
   "ai": {
-    "command": ["codex", "--yolo", "exec", "--sandbox", "danger-full-access", "--model", "{model}", "{prompt}"],
-    "model": "gpt-5.1-codex-mini",
-    "prompt_via_stdin": false,
-    "timeout_seconds": 600,
+    "provider": "anthropic",
+    "model": "claude-opus-4-8",
+    "base_url": null,
+    "max_tokens": 8000,
+    "effort": "high",
+    "thinking": true,
     "readme_char_limit": 4000,
     "tree_max_entries": 200,
     "tree_max_depth": 3

@@ -17,6 +17,20 @@ export interface SubmissionInfo {
   members: Member[];
 }
 
+export type Verdict = "authentic" | "suspicious" | "highly_suspicious" | "inconclusive";
+export type Confidence = "low" | "medium" | "high";
+
+// Structured AI authenticity analysis, written per repo by ai/run_ai.py.
+export interface AiAnalysis {
+  verdict: Verdict;
+  confidence: Confidence;
+  summary: string;
+  observations: string[];
+  red_flags: string[];
+  model?: string;
+  generated_at?: string;
+}
+
 export interface SummaryRow {
   repo_id: string;
   repo: string;
@@ -83,7 +97,7 @@ export interface RepoDetail {
   metrics: Metrics | null;
   commits: Commit[]; // first 100 for display
   commitsTotal: number; // true count for the "(N)" label
-  aiText: string | null;
+  ai: AiAnalysis | null;
 }
 
 export type DataSourceKind = "env" | "work" | "snapshot" | "empty";

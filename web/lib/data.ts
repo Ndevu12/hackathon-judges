@@ -5,6 +5,7 @@ import { parseCsv } from "./csv";
 import { readRepoConfig } from "./config";
 import { isBucketKey } from "./verdict";
 import type {
+  AiAnalysis,
   Commit,
   DashboardData,
   DataSourceKind,
@@ -197,15 +198,26 @@ function readDetail(src: Source, id: string): RepoDetail {
     /* tolerate missing/partial commits */
   }
 
-  let aiText: string | null = null;
+  let ai: AiAnalysis | null = null;
   try {
-    const p = path.join(src.aiDir, `${id}.txt`);
-    if (fs.existsSync(p)) aiText = fs.readFileSync(p, "utf8");
+    const p = path.join(src.aiDir, `${id}.json`);
+    if (fs.existsSync(p)) {
+      const raw = JSON.parse(fs.readFileSync(p, "utf8"));
+      ai = {
+        verdict: raw.verdict ?? "inconclusive",
+        confidence: raw.confidence ?? "low",
+        summary: raw.summary ?? "",
+        observations: Array.isArray(raw.observations) ? raw.observations : [],
+        red_flags: Array.isArray(raw.red_flags) ? raw.red_flags : [],
+        model: raw.model,
+        generated_at: raw.generated_at,
+      };
+    }
   } catch {
-    /* tolerate missing AI note */
+    /* tolerate missing/partial AI analysis */
   }
 
-  return { repoId: id, metrics, commits, commitsTotal, aiText };
+  return { repoId: id, metrics, commits, commitsTotal, ai };
 }
 
 // Reads all artifacts and returns one serializable dataset. Runs at build time

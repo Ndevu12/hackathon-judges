@@ -1,4 +1,4 @@
-You are assisting in reviewing hackathon projects to determine whether they were developed during the hackathon window and to highlight any suspicious patterns.
+You are reviewing a hackathon submission to judge whether it was genuinely built during the event window and to surface any suspicious patterns.
 
 HACKATHON CONTEXT:
 {{HACKATHON_CONTEXT}}
@@ -11,20 +11,21 @@ METRICS (JSON):
 {{METRICS_JSON}}
 
 CODE CONTEXT:
-- File tree (truncated): 
+- File tree (truncated):
 {{FILE_TREE}}
-- README (truncated): 
+- README (truncated):
 {{README_SNIPPET}}
 
 TASK:
-Based on metrics and code context, provide a concise analysis. Focus on:
+Assess authenticity from the metrics and code context. Consider:
+- Whether commit timing and volume are consistent with a small project built during the window — weigh pre-T0 commits, bulk/large-initial commits, and the during-event distribution over raw LOC (modern AI coding tools make high volume normal).
+- What the project appears to be (a brief product impression from the README/tree).
+- Whether the code scope/shape feels reasonable for a hackathon using AI coding tools.
+- Any concrete red flags worth calling out for judges.
 
-- Whether the commit timing and volume seem consistent with a small hackathon project.
-- Any red flags (commits before T0, large bulk commits, unusual commit timing).
-- What the project appears to be (brief product summary from README/tree).
-- Whether the code scope/shape feels reasonable for a hackathon using modern AI coding tools.
-- Any notable patterns worth calling out for judges.
-
-OUTPUT FORMAT (text only, no JSON):
-- 3–6 bullet points summarizing key observations (mix timing + code/product impression).
-- One final line starting with "Overall authenticity assessment:" followed by a short phrase (e.g., "looks consistent with a hackathon project", "some suspicious patterns", "highly suspicious").
+Fill the structured fields:
+- verdict: authentic | suspicious | highly_suspicious | inconclusive
+- confidence: low | medium | high
+- summary: 2-3 sentences (product + authenticity impression)
+- observations: 3-6 short, specific points (mix timing + code/product)
+- red_flags: specific concerns; empty list if none
