@@ -1,0 +1,102 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Terminal-theme accents (from the original ui/static/style.css) */
+  --color-ok: var(--ok);
+  --color-danger: var(--danger);
+  --color-warn: var(--warn);
+  --color-loc: var(--loc);
+  --color-text-secondary: var(--text-secondary);
+  --color-panel: var(--panel);
+  --color-panel-hover: var(--panel-hover);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-border-subtle: var(--border-subtle);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+/* Single dark "terminal" theme applied everywhere. */
+:root,
+.dark {
+  --background: #08090c;
+  --foreground: #f0f2f5;
+  --card: #12151c;
+  --card-foreground: #f0f2f5;
+  --popover: #12151c;
+  --popover-foreground: #f0f2f5;
+  --primary: #00d9a6;
+  --primary-foreground: #05221b;
+  --secondary: #181c26;
+  --secondary-foreground: #f0f2f5;
+  --muted: #12151c;
+  --muted-foreground: #6b7485;
+  --accent: #181c26;
+  --accent-foreground: #f0f2f5;
+  --destructive: #ff6b6b;
+  --border: #1e222d;
+  --input: #1e222d;
+  --ring: #00d9a6;
+  --radius: 0.6rem;
+
+  --ok: #00d9a6;
+  --danger: #ff6b6b;
+  --warn: #ffc145;
+  --loc: #a78bfa;
+  --text-secondary: #a8b1c0;
+  --panel: #12151c;
+  --panel-hover: #181c26;
+  --bg-subtle: #0d0f14;
+  --border-subtle: #161a23;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+  }
+}
+
+/* Faint accent grid background, matching the original dashboard. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 217, 166, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 217, 166, 0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}

@@ -85,6 +85,8 @@ python3 ui/server.py --config config.json
 ```
 Then open http://localhost:8000 (host/port come from the `server` section; override with `--host`/`--port`). It shows the summary table, metrics flags, time distribution, AI notes, and a commit slice (first 100 rows).
 
+There is also a **Next.js dashboard** in [`web/`](web/) (Tailwind + shadcn/ui, deployable to Vercel) that reads the same `work/` artifacts and judge JSON — see [web/README.md](web/README.md). Run it locally with `cd web && npm install && npm run dev`.
+
 ## Outputs
 Created under `work/` (auto-created if missing):
 - `repos/<id>/` cloned repositories (cached)
