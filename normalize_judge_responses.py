@@ -50,18 +50,13 @@ def load_project_repo_map() -> Dict[str, str]:
 
 
 def build_manual_aliases(mapping_keys: List[str]) -> Dict[str, str]:
-    """Hand-maintained aliases for mismatched names."""
-    aliases = {
-        clean_project_name("BaeFit"): clean_project_name("BaeFit - Megumin Virtual Assistant"),
-        clean_project_name("BillionaireTwin"): clean_project_name("BillionaireTwin (Thanh/Giang/Dung)"),
-        clean_project_name("Eduflow"): clean_project_name("Eduflow by Kody"),
-        clean_project_name("HISTORYLENS"): clean_project_name("HISTORYLENS - LĂNG KÍNH LỊCH SỬ"),
-        clean_project_name("IDB Team - Odoo + Cursor"): clean_project_name("IDB Team"),
-        clean_project_name("Quantum Bug ; Product name: AirDraw"): clean_project_name("Team: Quantum Bug ; Product name: AirDraw"),
-        clean_project_name("World Bias AI"): clean_project_name("World Bias"),
-        clean_project_name("finance Flow"): clean_project_name("FinancialFriend"),
-        clean_project_name("off clock"): clean_project_name("Off Clock"),
-    }
+    """Hand-maintained aliases for mismatched names.
+
+    Add entries per hackathon when a judge response's project name doesn't
+    match the name in project-repo-map.csv, e.g.:
+        clean_project_name("Short Name"): clean_project_name("Full Team Name"),
+    """
+    aliases: Dict[str, str] = {}
 
     # Keep only aliases that point to a known key.
     return {k: v for k, v in aliases.items() if v in mapping_keys}
