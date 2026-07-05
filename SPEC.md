@@ -91,7 +91,26 @@ Assume the following environment:
     * Command form: `codex --yolo exec --sandbox danger-full-access "<PROMPT>"`
 * Python dependencies (standard library only if possible: `argparse`, `csv`, `json`, `subprocess`, `datetime`, `statistics`, `os`, `pathlib`, `logging`).
 
-No external Python packages should be required.
+No external Python packages should be required (`normalize_judge_responses.py` additionally uses `pandas`).
+
+---
+
+## Configuration (`config.json`)
+
+All scripts load a shared, sectioned `config.json` via `common_config.py`.
+Precedence is **CLI flag → `config.json` → built-in default**; every setting has
+a default, so a partial or absent config still works. Legacy flat configs
+(`{"t0","t1","log_level"}`) are promoted into the `window` section automatically.
+
+Sections: `window` (t0/t1), `log_level`, `paths` (all input/output locations),
+`detection` (`bulk_insertion_threshold`, `bulk_files_threshold`,
+`time_buckets_hours`), `ai` (see §13), and `server` (host/port).
+
+**Time buckets are derived, not fixed.** `detection.time_buckets_hours` is a list
+of ascending hour boundaries `[b1, b2, …]`. The time-distribution keys become
+`commits_0_b1h, commits_b1_b2h, …, commits_after_bNh`. The default `[3, 6, 12, 24]`
+reproduces the legacy `commits_0_3h … commits_after_24h` schema exactly. Empty or
+non-ascending lists are rejected.
 
 ---
 
@@ -553,7 +572,7 @@ This file is the main artifact used by judges to spot deviations across all repo
 
 ### 13.1 Purpose
 
-For each repo with metrics, generate a **short-form AI analysis** using `codex` CLI and write it to `work/ai_outputs/<repo_id>.txt`.
+For each repo with metrics, generate a **short-form AI analysis** and write it to `work/ai_outputs/<repo_id>.txt`. The provider is the configurable `ai.command` template (`codex` by default); `{model}`/`{prompt}` are substituted, and `ai.prompt_via_stdin` selects argument vs. stdin delivery. See the Configuration section.
 
 ### 13.2 Additional input files
 

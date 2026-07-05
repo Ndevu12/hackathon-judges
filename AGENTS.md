@@ -2,16 +2,19 @@
 
 ## Project Structure & Module Organization
 - Core CLI: `scan.py` (metrics), `list_submissions.py` (listing helper), `normalize_judge_responses.py` (data cleanup).
+- Shared config: `common_config.py` holds the config schema, defaults, and helpers; `config.json` (from `config.example.json`) holds per-event settings.
 - AI helpers: `ai/run_ai.py` plus prompt assets in `ai/hackathon_context.md` and `ai/prompt_template.txt`.
 - Web viewer: `ui/server.py` with static assets under `ui/static/` for browsing generated metrics.
 - Data inputs: `data/` holds CSV exports and normalized judge data.
 - Outputs: `work/` is the sandbox for clones, metrics, AI summaries, logs, and summaries; safe to delete/regenerate.
 
 ## Build, Test, and Development Commands
-- `python3 scan.py --repos data/repos.csv --config config.json --work-dir work`: clone repos and compute metrics; add `--force` to recompute, `--no-update` to skip git refresh.
-- `python3 ai/run_ai.py --work-dir work --repos-csv data/repos.csv [--only-id <repo>]`: produce AI notes once metrics exist.
-- `python3 ui/server.py --work-dir work --port 8000`: serve the local dashboard at http://localhost:8000.
-- `python3 normalize_judge_responses.py`: regenerate normalized judge data from raw CSVs in `data/`.
+- All scripts take `--config config.json`; settings resolve as CLI flag > config.json > built-in default. Shared schema/helpers live in `common_config.py`.
+- `python3 scan.py --config config.json`: clone repos and compute metrics; `--force` recomputes, `--no-update` skips git refresh, `--time-buckets`/`--bulk-*` override detection knobs.
+- `python3 ai/run_ai.py --config config.json [--only-id <repo>]`: produce AI notes once metrics exist (provider is the configurable `ai.command`).
+- `python3 ui/server.py --config config.json`: serve the local dashboard (host/port from the `server` section).
+- `python3 normalize_judge_responses.py --config config.json`: regenerate normalized judge data (requires `pandas`).
+- `python3 list_submissions.py --config config.json`: list teams with clone URLs.
 - Use `python3 <script> --help` for full flag descriptions.
 
 ## Coding Style & Naming Conventions
@@ -31,6 +34,6 @@
 - PRs should describe the change, the commands run, and any datasets or sample repos used; include screenshots for UI adjustments.
 
 ## Security & Configuration Tips
-- Keep secrets out of `config.json`; only store public times/log levels. Use environment variables or local overrides for anything sensitive.
+- Keep secrets out of `config.json`; it holds public settings (times, thresholds, paths, the AI command). The AI command is user-configurable and executed via subprocess without a shell — only point it at trusted binaries. Use environment variables or local overrides for anything sensitive.
 - Avoid committing `work/` outputs unless explicitly requested; they are reproducible and can be large.
 - Verify cloned repos come from trusted sources; this tool executes git operations and parses repo contents locally.

@@ -8,9 +8,13 @@ import csv
 import json
 import logging
 import subprocess
+import sys
 from pathlib import Path
 from typing import Tuple
 from textwrap import shorten
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from common_config import build_ai_command, load_config, override_from_cli  # noqa: E402
 
 
 def parse_repo_url(raw: str) -> Tuple[str, str]:
@@ -127,14 +131,27 @@ def build_prompt(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run optional AI analysis via codex CLI.")
-    parser.add_argument("--work-dir", default="work", help="Work directory (contains ai_outputs, metrics)")
-    parser.add_argument("--repos-csv", default="data/repos.csv", help="Path to repos.csv")
+    parser = argparse.ArgumentParser(description="Run optional AI analysis via a configurable CLI.")
+    parser.add_argument("--config", help="Path to config.json")
+    parser.add_argument("--work-dir", help="Work directory (default: paths.work_dir from config)")
+    parser.add_argument("--repos-csv", help="Path to repos.csv (default: paths.repos_csv from config)")
     parser.add_argument("--only-id", help="Run AI analysis only for this repo id")
-    parser.add_argument("--model", default="gpt-5.1-codex-mini", help="Model name for codex CLI")
+    parser.add_argument("--model", help="Model name (overrides ai.model from config)")
     args = parser.parse_args()
 
-    work_dir = Path(args.work_dir)
+    config = load_config(Path(args.config) if args.config else None)
+    override_from_cli(
+        config,
+        {
+            "paths.work_dir": args.work_dir,
+            "paths.repos_csv": args.repos_csv,
+            "ai.model": args.model,
+        },
+    )
+    ai_cfg = config["ai"]
+    paths_cfg = config["paths"]
+
+    work_dir = Path(paths_cfg["work_dir"])
     metrics_dir = work_dir / "metrics"
     ai_outputs_dir = work_dir / "ai_outputs"
     ai_outputs_dir.mkdir(parents=True, exist_ok=True)
@@ -142,9 +159,9 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logger = logging.getLogger("ai")
 
-    repos_map = load_repos_map(Path(args.repos_csv))
-    context_path = Path("ai") / "hackathon_context.md"
-    template_path = Path("ai") / "prompt_template.txt"
+    repos_map = load_repos_map(Path(paths_cfg["repos_csv"]))
+    context_path = Path(paths_cfg["ai_context"])
+    template_path = Path(paths_cfg["ai_prompt_template"])
 
     if not context_path.exists() or not template_path.exists():
         logger.error("Missing AI context or template files.")
@@ -171,8 +188,16 @@ def main() -> None:
         repo = repos_map[repo_id]
         metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
         repo_dir = work_dir / "repos" / repo_id
-        file_tree = render_tree(repo_dir) if repo_dir.exists() else "Repo directory not found."
-        readme_snippet = read_best_readme(repo_dir) if repo_dir.exists() else "Repo directory not found."
+        file_tree = (
+            render_tree(repo_dir, ai_cfg["tree_max_entries"], ai_cfg["tree_max_depth"])
+            if repo_dir.exists()
+            else "Repo directory not found."
+        )
+        readme_snippet = (
+            read_best_readme(repo_dir, ai_cfg["readme_char_limit"])
+            if repo_dir.exists()
+            else "Repo directory not found."
+        )
         prompt = build_prompt(
             prompt_template,
             hackathon_context,
@@ -183,24 +208,39 @@ def main() -> None:
             readme_snippet,
         )
 
-        logger.info("Running codex for %s", repo_id)
+        argv, stdin_data = build_ai_command(
+            ai_cfg["command"], ai_cfg["model"], prompt, ai_cfg["prompt_via_stdin"]
+        )
+        output_path = ai_outputs_dir / f"{repo_id}.txt"
+        logger.info("Running %s for %s", argv[0], repo_id)
         try:
             result = subprocess.run(
-                ["codex", "--yolo", "exec", "--sandbox", "danger-full-access", "--model", args.model, prompt],
+                argv,
+                input=stdin_data,
                 capture_output=True,
                 text=True,
+                timeout=ai_cfg["timeout_seconds"],
             )
         except FileNotFoundError as exc:
-            logger.error("codex CLI not found: %s", exc)
-            (ai_outputs_dir / f"{repo_id}.txt").write_text(
-                "ERROR: codex CLI not available\n", encoding="utf-8"
+            logger.error("AI command %r not found: %s", argv[0], exc)
+            output_path.write_text(
+                f"ERROR: AI command not available: {argv[0]}\n", encoding="utf-8"
+            )
+            continue
+        except subprocess.TimeoutExpired:
+            logger.error("AI command timed out for %s", repo_id)
+            output_path.write_text(
+                f"ERROR: AI command timed out after {ai_cfg['timeout_seconds']}s\n",
+                encoding="utf-8",
             )
             continue
 
-        output_path = ai_outputs_dir / f"{repo_id}.txt"
         if result.returncode != 0:
-            logger.error("codex failed for %s: %s", repo_id, result.stderr.strip())
-            output_path.write_text(f"ERROR: codex failed ({result.returncode})\n{result.stderr}", encoding="utf-8")
+            logger.error("AI command failed for %s: %s", repo_id, result.stderr.strip())
+            output_path.write_text(
+                f"ERROR: AI command failed ({result.returncode})\n{result.stderr}",
+                encoding="utf-8",
+            )
             continue
 
         output_path.write_text(result.stdout, encoding="utf-8")

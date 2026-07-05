@@ -19,6 +19,9 @@ import sys
 from pathlib import Path
 from typing import Dict, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common_config import load_config, override_from_cli  # noqa: E402
+
 
 def parse_repo_url(raw: str) -> Tuple[str, str]:
     """
@@ -129,12 +132,11 @@ def load_repo_name_map(path: Path) -> Dict[str, str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="List teams in submission order with git repo URLs.")
-    parser.add_argument("--repos", default="data/repos.csv", type=Path, help="Path to repos CSV (default: data/repos.csv)")
+    parser.add_argument("--config", help="Path to config.json")
+    parser.add_argument("--repos", help="Path to repos CSV (default: paths.repos_csv from config)")
     parser.add_argument(
         "--repo-map",
-        default="data/project-repo-map.csv",
-        type=Path,
-        help="Optional CSV mapping of repo URL to submitted team/product name (default: data/project-repo-map.csv)",
+        help="CSV mapping repo URL to team/product name (default: paths.project_repo_map from config)",
     )
     parser.add_argument(
         "--names-only",
@@ -143,14 +145,22 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    if not args.repos.exists():
-        sys.stderr.write(f"Repos CSV not found: {args.repos}\n")
+    config = load_config(Path(args.config) if args.config else None)
+    override_from_cli(
+        config,
+        {"paths.repos_csv": args.repos, "paths.project_repo_map": args.repo_map},
+    )
+    repos_path = Path(config["paths"]["repos_csv"])
+    repo_map_path = Path(config["paths"]["project_repo_map"])
+
+    if not repos_path.exists():
+        sys.stderr.write(f"Repos CSV not found: {repos_path}\n")
         return 1
 
-    repo_name_map = load_repo_name_map(args.repo_map)
+    repo_name_map = load_repo_name_map(repo_map_path)
 
     rows = []
-    with args.repos.open(newline="", encoding="utf-8") as f:
+    with repos_path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for idx, row in enumerate(reader, start=2):  # start=2 accounts for header line
             repo_val = row.get("repo_url") or row.get("repo") or ""

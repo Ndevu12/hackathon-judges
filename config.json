@@ -1,5 +1,34 @@
 {
-  "t0": "2025-12-01T10:00:00Z",
-  "t1": "2025-12-02T10:00:00Z",
-  "log_level": "INFO"
+  "window": {
+    "t0": "2025-12-01T10:00:00Z",
+    "t1": "2025-12-02T10:00:00Z"
+  },
+  "log_level": "INFO",
+  "paths": {
+    "work_dir": "work",
+    "repos_csv": "data/repos.csv",
+    "project_repo_map": "data/project-repo-map.csv",
+    "judge_responses_raw": "data/judge-responses-raw.csv",
+    "judge_responses_normalized": "data/judge-responses-normalized.json",
+    "ai_context": "ai/hackathon_context.md",
+    "ai_prompt_template": "ai/prompt_template.txt"
+  },
+  "detection": {
+    "bulk_insertion_threshold": 1000,
+    "bulk_files_threshold": 50,
+    "time_buckets_hours": [3, 6, 12, 24]
+  },
+  "ai": {
+    "command": ["codex", "--yolo", "exec", "--sandbox", "danger-full-access", "--model", "{model}", "{prompt}"],
+    "model": "gpt-5.1-codex-mini",
+    "prompt_via_stdin": false,
+    "timeout_seconds": 600,
+    "readme_char_limit": 4000,
+    "tree_max_entries": 200,
+    "tree_max_depth": 3
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8000
+  }
 }

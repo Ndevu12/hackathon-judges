@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import argparse
 import json
 import re
+import sys
 from collections import defaultdict
 from difflib import get_close_matches
 from pathlib import Path
@@ -9,10 +11,8 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 
-
-RAW_RESPONSES_PATH = Path("data/judge-responses-raw.csv")
-PROJECT_MAP_PATH = Path("data/project-repo-map.csv")
-OUTPUT_PATH = Path("data/judge-responses-normalized.json")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common_config import load_config, override_from_cli  # noqa: E402
 
 
 def clean_project_name(name: str) -> str:
@@ -29,10 +29,10 @@ def extract_first_url(text: str) -> Optional[str]:
     return match.group(0).strip() if match else None
 
 
-def load_project_repo_map() -> Dict[str, str]:
+def load_project_repo_map(path: Path) -> Dict[str, str]:
     """Load the project->repo map, cleaning names and urls."""
     df = pd.read_csv(
-        PROJECT_MAP_PATH, sep="\\t", header=None, names=["Project", "Repo"], engine="python"
+        path, sep="\\t", header=None, names=["Project", "Repo"], engine="python"
     )
     mapping: Dict[str, str] = {}
     for _, row in df.iterrows():
@@ -83,11 +83,11 @@ def resolve_project_repo(
     return None
 
 
-def normalize_responses() -> Dict[str, dict]:
-    project_repo_map = load_project_repo_map()
+def normalize_responses(raw_path: Path, project_map_path: Path) -> Dict[str, dict]:
+    project_repo_map = load_project_repo_map(project_map_path)
     aliases = build_manual_aliases(list(project_repo_map.keys()))
 
-    responses = pd.read_csv(RAW_RESPONSES_PATH)
+    responses = pd.read_csv(raw_path)
     normalized: Dict[str, dict] = {}
     unmapped: List[dict] = []
 
@@ -126,11 +126,32 @@ def normalize_responses() -> Dict[str, dict]:
 
 
 def main() -> None:
-    result = normalize_responses()
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with OUTPUT_PATH.open("w", encoding="utf-8") as f:
+    parser = argparse.ArgumentParser(description="Normalize judge responses into per-repo JSON.")
+    parser.add_argument("--config", help="Path to config.json")
+    parser.add_argument("--raw", help="Raw judge responses CSV (default: paths.judge_responses_raw)")
+    parser.add_argument("--project-map", help="Project->repo map CSV (default: paths.project_repo_map)")
+    parser.add_argument("--output", help="Where to write normalized JSON (default: paths.judge_responses_normalized)")
+    args = parser.parse_args()
+
+    config = load_config(Path(args.config) if args.config else None)
+    override_from_cli(
+        config,
+        {
+            "paths.judge_responses_raw": args.raw,
+            "paths.project_repo_map": args.project_map,
+            "paths.judge_responses_normalized": args.output,
+        },
+    )
+    paths_cfg = config["paths"]
+    raw_path = Path(paths_cfg["judge_responses_raw"])
+    project_map_path = Path(paths_cfg["project_repo_map"])
+    output_path = Path(paths_cfg["judge_responses_normalized"])
+
+    result = normalize_responses(raw_path, project_map_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
-    print(f"Wrote normalized responses to {OUTPUT_PATH}")
+    print(f"Wrote normalized responses to {output_path}")
     if result["unmapped_responses"]:
         print("Unmapped projects:")
         for entry in result["unmapped_responses"]:
