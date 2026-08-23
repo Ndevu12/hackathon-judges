@@ -1,0 +1,21 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "main",
+    "origin",
+    "security/auto-clean",
+    "security/guard-setup"
+  ],
+  "parent": {
+    "main": null,
+    "origin": "main",
+    "security/auto-clean": "main",
+    "security/guard-setup": "main"
+  },
+  "order": [
+    "main",
+    "origin",
+    "security/auto-clean",
+    "security/guard-setup"
+  ]
+}
